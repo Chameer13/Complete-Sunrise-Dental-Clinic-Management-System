@@ -1,0 +1,307 @@
+
+
+/* =========================================================
+   PATIENT DASHBOARD / APPOINTMENT HISTORY / PAYMENT
+   Matches the existing Sunrise dark-blue + white theme
+   ========================================================= */
+
+.patient-dashboard-list,
+.history-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.patient-dashboard-item,
+.history-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.3fr 0.8fr;
+  gap: 18px;
+  align-items: center;
+  padding: 15px 16px;
+  background: #f8fbfd;
+  border: 1px solid #dce5ed;
+  border-radius: 9px;
+}
+
+.patient-dashboard-item div,
+.history-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.patient-dashboard-item b,
+.history-row b {
+  color: #163e5d;
+  font-size: 13px;
+}
+
+.patient-dashboard-item small,
+.history-row small {
+  color: #8293a2;
+  font-size: 11px;
+}
+
+.patient-dashboard-item span,
+.history-row > span {
+  justify-self: end;
+  padding: 5px 10px;
+  background: #eaf2f8;
+  border-radius: 5px;
+  color: #1769a6;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.history-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: #1769a6;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.history-link:hover {
+  text-decoration: underline;
+}
+
+/* Payment page */
+
+.payment-layout {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 22px;
+}
+
+.bill-lines {
+  margin-top: 22px;
+}
+
+.bill-lines > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid #e8eef3;
+  color: #627689;
+  font-size: 14px;
+}
+
+.bill-lines > div b {
+  color: #173b58;
+}
+
+.bill-lines .bill-total {
+  margin-top: 7px;
+  padding-top: 18px;
+  border-bottom: 0;
+  font-size: 17px;
+}
+
+.bill-lines .bill-total b {
+  color: #0b416b;
+  font-size: 20px;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.payment-methods button {
+  min-height: 55px;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid #dce5ed;
+  border-radius: 8px;
+  color: #29445a;
+  font-weight: 700;
+}
+
+.payment-methods button:hover,
+.payment-methods button.selected {
+  background: #edf5fa;
+  border-color: #1769a6;
+  color: #0b416b;
+}
+
+.payment-form {
+  margin-top: 10px;
+}
+
+.card-form {
+  padding: 18px;
+  background: #f8fbfd;
+  border: 1px solid #dce5ed;
+  border-radius: 10px;
+}
+
+.card-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+  color: #29445a;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.card-form input {
+  width: 100%;
+  height: 46px;
+  padding: 0 13px;
+  background: #fff;
+  border: 1px solid #d5e0e8;
+  border-radius: 7px;
+  outline: none;
+}
+
+.card-form input:focus {
+  border-color: #1769a6;
+  box-shadow: 0 0 0 3px rgba(23, 105, 166, 0.1);
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.security-note {
+  margin: 8px 0 0 !important;
+  color: #718496 !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+}
+
+.pay-button {
+  width: 100%;
+  height: 49px;
+  margin-top: 17px;
+  background: #0b416b;
+  border: 0;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pay-button:hover {
+  background: #1769a6;
+}
+
+.pay-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.payment-success {
+  max-width: 700px;
+  margin: 30px auto;
+  text-align: center;
+}
+
+.success-icon {
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  background: #eaf6f0;
+  border-radius: 50%;
+  color: #147a52;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.payment-success h1 {
+  margin-bottom: 8px;
+}
+
+.receipt-summary {
+  margin: 25px 0;
+  border: 1px solid #dce5ed;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.receipt-summary > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 17px;
+  border-bottom: 1px solid #e8eef3;
+}
+
+.receipt-summary > div:last-child {
+  border-bottom: 0;
+}
+
+.receipt-summary span {
+  color: #718496;
+  font-size: 13px;
+}
+
+.receipt-summary b {
+  color: #163e5d;
+  font-size: 13px;
+}
+
+.payment-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.payment-actions button {
+  min-height: 44px;
+  padding: 0 18px;
+  background: #0b416b;
+  border: 0;
+  border-radius: 8px;
+  color: white;
+  font-weight: 700;
+}
+
+.payment-actions button.secondary {
+  background: #edf3f7;
+  color: #163e5d;
+}
+
+@media (max-width: 800px) {
+  .payment-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-dashboard-item,
+  .history-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .patient-dashboard-item span,
+  .history-row > span {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 600px) {
+  .payment-methods,
+  .card-row {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-actions {
+    flex-direction: column;
+  }
+
+  .payment-actions button {
+    width: 100%;
+  }
+}

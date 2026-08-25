@@ -1135,4 +1135,681 @@ option {
   .app > header button {
     padding: 7px 9px;
   }
+  
+}
+/* =========================================================
+   SUNRISE DENTAL - PAYMENT PAGE
+   Dark Blue + White Professional Theme
+   ========================================================= */
+
+:root {
+  --primary: #0b2a4a;
+  --primary-dark: #061c33;
+  --primary-light: #123e68;
+  --accent: #2f80ed;
+  --accent-hover: #1f6ed4;
+
+  --white: #ffffff;
+  --background: #f4f7fb;
+  --card: #ffffff;
+  --text: #172b3a;
+  --muted: #6b7c8f;
+  --border: #dbe3ec;
+
+  --success: #159957;
+  --success-bg: #eaf8f0;
+
+  --danger: #d64545;
+  --shadow: 0 12px 35px rgba(11, 42, 74, 0.10);
+}
+
+/* ---------------------------------------------------------
+   BASIC PAGE
+   --------------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  background: var(--background);
+  color: var(--text);
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+/* ---------------------------------------------------------
+   MAIN APP
+   --------------------------------------------------------- */
+
+.app {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(47, 128, 237, 0.08),
+      transparent 32%
+    ),
+    var(--background);
+}
+
+/* ---------------------------------------------------------
+   HEADER
+   --------------------------------------------------------- */
+
+.app > header {
+  min-height: 72px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: var(--primary);
+  color: var(--white);
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.12);
+}
+
+.app > header b {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.app > header a {
+  color: #ffffff;
+  text-decoration: none;
+
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.2s ease;
+}
+
+.app > header a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+}
+
+/* ---------------------------------------------------------
+   MAIN CONTENT
+   --------------------------------------------------------- */
+
+.app > main {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+  padding: 42px 0 70px;
+}
+
+/* ---------------------------------------------------------
+   PAYMENT LAYOUT
+   --------------------------------------------------------- */
+
+.payment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr);
+  gap: 26px;
+  align-items: start;
+}
+
+/* ---------------------------------------------------------
+   PANELS
+   --------------------------------------------------------- */
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  padding: 30px;
+
+  box-shadow: var(--shadow);
+}
+
+.panel h1 {
+  margin: 0 0 8px;
+
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: 750;
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+
+  color: var(--primary);
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.panel > p {
+  margin: 0 0 25px;
+
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------
+   BILL SUMMARY
+   --------------------------------------------------------- */
+
+.bill-lines {
+  margin-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.bill-lines > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+  padding: 16px 4px;
+
+  border-bottom: 1px solid #edf1f5;
+}
+
+.bill-lines span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.bill-lines b {
+  color: var(--text);
+  font-size: 15px;
+  text-align: right;
+}
+
+.bill-lines > div:first-child {
+  padding-top: 20px;
+}
+
+.bill-lines > div:first-child span {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.bill-lines > div:first-child b {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* TOTAL */
+
+.bill-lines .bill-total {
+  margin-top: 10px;
+  padding: 20px 16px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #edf5ff;
+}
+
+.bill-lines .bill-total span {
+  color: var(--primary);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.bill-lines .bill-total b {
+  color: var(--primary);
+  font-size: 23px;
+  font-weight: 800;
+}
+
+/* ---------------------------------------------------------
+   PAYMENT METHOD
+   --------------------------------------------------------- */
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  margin: 24px 0;
+}
+
+.payment-methods button {
+  min-height: 58px;
+
+  background: #ffffff;
+  color: var(--primary);
+
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.payment-methods button:hover {
+  border-color: var(--accent);
+  background: #f5f9ff;
+}
+
+.payment-methods button.selected {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+
+  box-shadow: 0 5px 14px rgba(11, 42, 74, 0.18);
+}
+
+.payment-methods button:active {
+  transform: translateY(1px);
+}
+
+/* ---------------------------------------------------------
+   PAYMENT FORM
+   --------------------------------------------------------- */
+
+.payment-form {
+  margin-top: 10px;
+}
+
+.payment-form label {
+  display: block;
+
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 650;
+
+  margin-bottom: 17px;
+}
+
+.payment-form input {
+  width: 100%;
+  height: 48px;
+
+  margin-top: 7px;
+  padding: 0 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: var(--text);
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.payment-form input::placeholder {
+  color: #a4afbb;
+}
+
+.payment-form input:focus {
+  border-color: var(--accent);
+
+  box-shadow:
+    0 0 0 3px rgba(47, 128, 237, 0.12);
+}
+
+/* ---------------------------------------------------------
+   CARD FORM
+   --------------------------------------------------------- */
+
+.card-form {
+  padding: 21px;
+
+  background: #f8fafc;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  margin-bottom: 20px;
+}
+
+.card-form::before {
+  content: "Card payment";
+  display: block;
+
+  color: var(--primary);
+  font-size: 16px;
+  font-weight: 750;
+
+  margin-bottom: 18px;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ---------------------------------------------------------
+   SECURITY MESSAGE
+   --------------------------------------------------------- */
+
+.security-note {
+  margin: 8px 0 0;
+
+  padding: 12px 14px;
+
+  background: #eef6ff;
+  border-left: 4px solid var(--accent);
+
+  border-radius: 6px;
+
+  color: #52677d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------
+   PAY BUTTON
+   --------------------------------------------------------- */
+
+.pay-button {
+  width: 100%;
+  height: 52px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: var(--primary);
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(11, 42, 74, 0.18);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pay-button:hover:not(:disabled) {
+  background: var(--primary-light);
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 8px 20px rgba(11, 42, 74, 0.22);
+}
+
+.pay-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pay-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------
+   STATUS MESSAGE
+   --------------------------------------------------------- */
+
+.payment-form > p {
+  margin: 16px 0 0;
+
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------
+   PAYMENT SUCCESS PAGE
+   --------------------------------------------------------- */
+
+.payment-success {
+  max-width: 650px;
+  margin: 35px auto;
+
+  text-align: center;
+}
+
+.success-icon {
+  width: 76px;
+  height: 76px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--success-bg);
+  color: var(--success);
+
+  border: 6px solid #d9f1e4;
+
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.payment-success h1 {
+  margin-bottom: 10px;
+}
+
+.payment-success > p {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------------------------------------------------------
+   RECEIPT SUMMARY
+   --------------------------------------------------------- */
+
+.receipt-summary {
+  margin: 28px auto;
+
+  max-width: 520px;
+
+  text-align: left;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  background: #fafcff;
+}
+
+.receipt-summary > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 16px 18px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.receipt-summary > div:last-child {
+  border-bottom: none;
+}
+
+.receipt-summary span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.receipt-summary b {
+  color: var(--primary);
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------
+   SUCCESS ACTIONS
+   --------------------------------------------------------- */
+
+.payment-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  margin-top: 24px;
+}
+
+.payment-actions button {
+  min-height: 46px;
+
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: var(--primary);
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.payment-actions button:hover {
+  background: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.payment-actions button.secondary {
+  background: #ffffff;
+  color: var(--primary);
+
+  border: 1px solid var(--border);
+}
+
+.payment-actions button.secondary:hover {
+  background: #f3f7fb;
+  border-color: var(--primary);
+}
+
+/* ---------------------------------------------------------
+   LOADING / BILL PREPARATION
+   --------------------------------------------------------- */
+
+.app > main > .panel:not(.payment-success) h1 {
+  color: var(--primary);
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE DESIGN
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .payment-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .app > main {
+    width: min(94%, 700px);
+    padding-top: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .app > header {
+    padding: 0 20px;
+    min-height: 64px;
+  }
+
+  .app > header b {
+    font-size: 16px;
+  }
+
+  .app > header a {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .panel {
+    padding: 22px 18px;
+    border-radius: 12px;
+  }
+
+  .panel h1 {
+    font-size: 24px;
+  }
+
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .card-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bill-lines > div {
+    gap: 12px;
+  }
+
+  .bill-lines .bill-total b {
+    font-size: 20px;
+  }
+
+  .payment-actions {
+    flex-direction: column;
+  }
+
+  .payment-actions button {
+    width: 100%;
+  }
+
+  .receipt-summary > div {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .card-row {
+    grid-template-columns: 1fr;
+  }
+
+  .app > header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 15px;
+  }
+
+  .bill-lines > div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bill-lines b {
+    text-align: left;
+  }
 }

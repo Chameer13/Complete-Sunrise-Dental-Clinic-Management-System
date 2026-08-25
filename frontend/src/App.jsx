@@ -15,6 +15,7 @@ import Patient from "./pages/Patient";
 import Appointment from "./pages/Appointment";
 import Dentist from "./pages/Dentist";
 import Billing from "./pages/Billing";
+import Payment from "./pages/Payment";
 import Updates from "./pages/Updates";
 
 
@@ -93,6 +94,15 @@ export default function App() {
                         ]}
                     >
                         <Billing />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/payment/:appointmentId"
+                element={
+                    <ProtectedRoute roles={["PATIENT"]}>
+                        <Payment />
                     </ProtectedRoute>
                 }
             />
