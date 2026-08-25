@@ -1,0 +1,4 @@
+import {createContext,useContext,useState} from 'react';
+const AuthContext=createContext(null);
+export function AuthProvider({children}){const [user,setUser]=useState(()=>{try{return JSON.parse(localStorage.getItem('sunrise_user'))||null}catch{return null}}); const login=(data)=>{const u={userId:data.userId,fullName:data.fullName,username:data.username,role:data.role};localStorage.setItem('sunrise_token',data.token);localStorage.setItem('sunrise_user',JSON.stringify(u));setUser(u)}; const logout=()=>{localStorage.removeItem('sunrise_token');localStorage.removeItem('sunrise_user');setUser(null)}; return <AuthContext.Provider value={{user,login,logout,isAuthenticated:!!localStorage.getItem('sunrise_token')}}>{children}</AuthContext.Provider>}
+export const useAuth=()=>useContext(AuthContext);
