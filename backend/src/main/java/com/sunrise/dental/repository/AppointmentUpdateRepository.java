@@ -1,0 +1,2 @@
+package com.sunrise.dental.repository; import com.sunrise.dental.entity.*; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*;
+public interface AppointmentUpdateRepository extends JpaRepository<AppointmentUpdate,Long>{List<AppointmentUpdate> findByAppointmentPatientIdOrderByCreatedAtDesc(Long patientId); List<AppointmentUpdate> findAllByOrderByCreatedAtDesc();}

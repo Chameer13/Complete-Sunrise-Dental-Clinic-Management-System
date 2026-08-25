@@ -1,0 +1,1 @@
+package com.sunrise.dental.dto; import com.sunrise.dental.entity.PaymentMethod; import jakarta.validation.constraints.*; import java.math.BigDecimal; public record BillRequest(@NotNull Long appointmentId,@DecimalMin("0.00") BigDecimal discount,@DecimalMin("0.00") BigDecimal tax,@DecimalMin("0.00") BigDecimal paidAmount,PaymentMethod paymentMethod){}

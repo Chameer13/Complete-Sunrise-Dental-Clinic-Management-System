@@ -1,0 +1,2 @@
+package com.sunrise.dental.repository; import com.sunrise.dental.entity.*; import org.springframework.data.jpa.repository.*; import java.util.*;
+public interface PasswordResetOtpRepository extends JpaRepository<PasswordResetOtp,Long>{Optional<PasswordResetOtp> findTopByUserIdAndUsedFalseOrderByIdDesc(Long id);}

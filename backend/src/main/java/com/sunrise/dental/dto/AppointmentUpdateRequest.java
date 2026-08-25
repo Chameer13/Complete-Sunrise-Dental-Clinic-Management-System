@@ -1,0 +1,1 @@
+package com.sunrise.dental.dto; import com.sunrise.dental.entity.AppointmentStatus; import jakarta.validation.constraints.*; public record AppointmentUpdateRequest(@NotNull AppointmentStatus status,@NotBlank @Size(max=1500) String message){}

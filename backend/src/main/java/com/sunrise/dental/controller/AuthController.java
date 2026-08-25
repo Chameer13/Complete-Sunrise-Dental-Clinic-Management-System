@@ -1,9 +1,110 @@
 package com.sunrise.dental.controller;
-import com.sunrise.dental.dto.*; import com.sunrise.dental.service.AuthService; import io.swagger.v3.oas.annotations.Operation; import io.swagger.v3.oas.annotations.tags.Tag; import jakarta.validation.Valid; import org.springframework.http.*; import org.springframework.web.bind.annotation.*;
-@RestController @RequestMapping("/api/auth") @Tag(name="Authentication",description="Staff registration and login")
+
+import com.sunrise.dental.dto.AuthResponse;
+import com.sunrise.dental.dto.LoginRequest;
+import com.sunrise.dental.dto.RegisterRequest;
+import com.sunrise.dental.dto.ResetDtos.ForgotRequest;
+import com.sunrise.dental.dto.ResetDtos.ResetRequest;
+import com.sunrise.dental.service.AuthService;
+
+import jakarta.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
- private final AuthService service; public AuthController(AuthService service){this.service=service;}
- @PostMapping("/register") @Operation(summary="Register staff account") public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request){service.register(request); return ResponseEntity.status(HttpStatus.CREATED).body(AuthResponse.registered());}
- @PostMapping("/login") @Operation(summary="Login staff account") public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){return ResponseEntity.ok(service.login(request));}
- @GetMapping("/check") @Operation(summary="Check API availability") public String check(){return "Sunrise Dental Clinic Authentication API is running.";}
+
+ private final AuthService authService;
+
+ public AuthController(AuthService authService) {
+  this.authService = authService;
+ }
+
+
+ // =========================================================
+ // REGISTER
+ // =========================================================
+
+ @PostMapping("/register")
+ public ResponseEntity<?> register(
+         @Valid @RequestBody RegisterRequest request
+ ) {
+
+  authService.register(request);
+
+  return ResponseEntity
+          .status(201)
+          .body(
+                  Map.of(
+                          "success",
+                          true,
+                          "message",
+                          "Registration successful. You can now sign in."
+                  )
+          );
+ }
+
+
+ // =========================================================
+ // LOGIN
+ // =========================================================
+
+ @PostMapping("/login")
+ public AuthResponse login(
+         @Valid @RequestBody LoginRequest request
+ ) {
+
+  return authService.login(request);
+ }
+
+
+ // =========================================================
+ // FORGOT PASSWORD
+ // =========================================================
+
+ @PostMapping("/forgot-password")
+ public ResponseEntity<?> forgotPassword(
+         @Valid @RequestBody ForgotRequest request
+ ) {
+
+  authService.forgot(
+          request.email()
+  );
+
+  return ResponseEntity.ok(
+          Map.of(
+                  "success",
+                  true,
+                  "message",
+                  "If the email is registered, a password reset OTP has been sent."
+          )
+  );
+ }
+
+
+ // =========================================================
+ // RESET PASSWORD
+ // =========================================================
+
+ @PostMapping("/reset-password")
+ public ResponseEntity<?> resetPassword(
+         @Valid @RequestBody ResetRequest request
+ ) {
+
+  authService.reset(request);
+
+  return ResponseEntity.ok(
+          Map.of(
+                  "success",
+                  true,
+                  "message",
+                  "Password reset successfully."
+          )
+  );
+ }
 }

@@ -1,0 +1,2 @@
+package com.sunrise.dental.repository; import com.sunrise.dental.entity.*; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository;
+public interface PatientRepository extends JpaRepository<Patient,Long>{Optional<Patient> findByIdNumberIgnoreCase(String idNumber); Optional<Patient> findByUserId(Long userId); boolean existsByIdNumberIgnoreCase(String idNumber);}
