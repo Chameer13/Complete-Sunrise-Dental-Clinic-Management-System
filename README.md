@@ -97,3 +97,10 @@ Key relationships:
 - `users` 1—many password reset OTP records
 
 Do not use `ddl-auto=update` for production migrations; use Flyway/Liquibase and environment-specific secrets for a production deployment.
+
+## Version History
+
+- v1.0.0 - Login and Registration
+- v1.1.0 - Basic Clinic Management System
+- v1.2.0 - Patient Module and Dashboard
+- v1.3.0 - Final Staff Requirements and Dentist Search
