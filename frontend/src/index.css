@@ -305,3 +305,31 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   RECEPTION / STAFF OPERATIONS
+   Same Sunrise Dental dark-blue + white theme
+   ========================================================= */
+.lookup{display:flex;gap:10px;align-items:center;margin:18px 0}.lookup input{flex:1;min-height:46px;padding:0 14px;border:1px solid #dce5ed;border-radius:8px;background:#fff;color:#173b58;outline:none}.lookup input:focus{border-color:#0b416b;box-shadow:0 0 0 3px rgba(11,65,107,.10)}.lookup button{min-height:46px;padding:0 18px;border:0;border-radius:8px;background:#0b416b;color:#fff;font-weight:700;cursor:pointer}.lookup button:disabled{opacity:.65;cursor:not-allowed}
+.panel-heading-row{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:18px}.panel-heading-row h2{margin-bottom:5px}.panel-heading-row p{margin:0}.history-filter{min-width:220px;min-height:42px;padding:0 12px;border:1px solid #dce5ed;border-radius:8px;background:#fff;color:#173b58;font-weight:600}
+.staff-patient-card{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.staff-patient-card>div{padding:16px;background:#f8fbfd;border:1px solid #dce5ed;border-radius:9px}.staff-patient-card span{display:block;color:#8293a2;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}.staff-patient-card b{display:block;color:#163e5d;font-size:14px;word-break:break-word}
+.staff-records{display:flex;flex-direction:column;gap:10px}.staff-record{display:grid;grid-template-columns:1.1fr 1.3fr .9fr .8fr auto;gap:14px;align-items:center;padding:16px;background:#f8fbfd;border:1px solid #dce5ed;border-radius:9px}.staff-record>div{display:flex;flex-direction:column;gap:4px}.staff-record b{color:#163e5d;font-size:13px}.staff-record small{color:#8293a2;font-size:11px}.staff-record button{min-height:38px;padding:0 13px;border:0;border-radius:7px;background:#0b416b;color:#fff;font-size:12px;font-weight:700;cursor:pointer}.payment-status{justify-self:start;padding:6px 9px;border-radius:5px;font-size:10px;font-weight:800;text-transform:uppercase}.payment-status.paid{background:#e8f7ef;color:#17834d}.payment-status.unpaid,.payment-status.partially_paid{background:#fff4df;color:#9a6800}.paid-method{font-size:11px;color:#17834d;font-weight:700}
+.staff-updates{display:flex;flex-direction:column;gap:12px}.staff-updates article,.update{padding:17px;background:#f8fbfd;border:1px solid #dce5ed;border-radius:9px}.staff-updates article>div,.update>div{display:flex;justify-content:space-between;gap:15px}.staff-updates article b,.update b{color:#163e5d;font-size:13px}.staff-updates article small,.update small{color:#8293a2;font-size:11px}.staff-updates article p,.update p{margin:10px 0;color:#4f6374;line-height:1.55;font-size:13px}.staff-updates article span,.update span{font-size:11px;color:#1769a6;font-weight:700}
+.dentist-table{display:flex;flex-direction:column;gap:10px}.dentist-table .row{display:grid;grid-template-columns:1fr 1.2fr 1fr auto;gap:15px;align-items:center;padding:16px;background:#f8fbfd;border:1px solid #dce5ed;border-radius:9px}.dentist-table .row>div{display:flex;flex-direction:column;gap:4px}.dentist-table .row b{color:#163e5d;font-size:13px}.dentist-table .row small{color:#8293a2;font-size:11px}.dentist-table .row button{min-height:39px;padding:0 14px;border:0;border-radius:7px;background:#0b416b;color:#fff;font-weight:700;font-size:12px;cursor:pointer}
+
+@media(max-width:900px){.staff-patient-card{grid-template-columns:1fr 1fr}.staff-record{grid-template-columns:1fr 1fr}.dentist-table .row{grid-template-columns:1fr 1fr}.history-filter{width:100%}.panel-heading-row{flex-direction:column}}
+@media(max-width:600px){.lookup{flex-direction:column;align-items:stretch}.lookup button{width:100%}.staff-patient-card{grid-template-columns:1fr}.staff-record{grid-template-columns:1fr}.staff-record button{width:100%}.dentist-table .row{grid-template-columns:1fr}.panel-heading-row{gap:10px}}
+.paid-actions{display:flex;align-items:center;gap:7px}.receipt-mini{min-height:32px!important;padding:0 9px!important;background:#edf3f7!important;color:#163e5d!important;border:1px solid #dce5ed!important;font-size:11px!important}
+
+/* Staff dentist appointment search */
+.staff-dentist-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.staff-dentist-search select{width:100%;min-height:48px;padding:0 14px;border:1px solid #dbe3ec;border-radius:8px;background:#fff;color:#172b3a;font:inherit;outline:none}
+.staff-dentist-search select:focus{border-color:#2f80ed;box-shadow:0 0 0 3px rgba(47,128,237,.12)}
+.staff-appointment-table{border-top:1px solid #dbe3ec}
+.staff-appointment-row{display:grid;grid-template-columns:1.05fr 1.25fr 1.1fr .75fr;gap:18px;align-items:center;padding:17px 4px;border-bottom:1px solid #edf1f5}
+.staff-appointment-row b{display:block;color:#0b2a4a;font-size:14px}
+.staff-appointment-row small{display:block;margin-top:5px;color:#6b7c8f;font-size:12px}
+.appointment-status{justify-self:end;padding:7px 11px;border-radius:999px;background:#eef3f8;color:#0b2a4a;font-size:12px;font-weight:700}
+.appointment-status.booked{background:#edf5ff;color:#1f6ed4}
+.appointment-status.confirmed{background:#eaf8f0;color:#159957}
+@media(max-width:800px){.staff-appointment-row{grid-template-columns:1fr 1fr}.appointment-status{justify-self:start}.staff-dentist-search{grid-template-columns:1fr}}

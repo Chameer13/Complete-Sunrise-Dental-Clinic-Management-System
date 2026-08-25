@@ -86,7 +86,8 @@ public class AuthService {
           enc.encode(request.password())
   );
 
-  user.setRole(request.role());
+  // Public registration is for patients only. Reception accounts are provisioned by the clinic.
+  user.setRole(com.sunrise.dental.entity.Role.PATIENT);
 
   user.setActive(true);
 

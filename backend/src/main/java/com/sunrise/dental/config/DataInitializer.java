@@ -19,6 +19,13 @@ public class DataInitializer {
     admin.setRole(Role.ADMIN); admin.setEmailVerified(true); admin.setActive(true); users.save(admin);
    }
 
+   // Five reception staff accounts. Existing data is preserved.
+   seedReceptionist(users,enc,"reception1","Receptionist 1","reception1@sunrisedental.lk");
+   seedReceptionist(users,enc,"reception2","Receptionist 2","reception2@sunrisedental.lk");
+   seedReceptionist(users,enc,"reception3","Receptionist 3","reception3@sunrisedental.lk");
+   seedReceptionist(users,enc,"reception4","Receptionist 4","reception4@sunrisedental.lk");
+   seedReceptionist(users,enc,"reception5","Receptionist 5","reception5@sunrisedental.lk");
+
    // Always ensure the five clinic dentists exist. Existing data is preserved.
    seedDentist(users,dentists,enc,"dentist1","Dr. Kasun Perera","dentist1@sunrisedental.lk","SLMC-D-10001","General Dentistry","BDS");
    seedDentist(users,dentists,enc,"dentist2","Dr. Nadeesha Fernando","dentist2@sunrisedental.lk","SLMC-D-10002","Orthodontics","BDS, MSc Orthodontics");
@@ -35,6 +42,13 @@ public class DataInitializer {
     }
    }
   };
+ }
+
+ private void seedReceptionist(UserRepository users,PasswordEncoder enc,String username,String fullName,String email){
+  if(users.findByUsernameIgnoreCase(username).isPresent()) return;
+  User u=new User(); u.setFullName(fullName); u.setUsername(username); u.setEmail(email);
+  u.setPasswordHash(enc.encode("Reception@123")); u.setRole(Role.RECEPTIONIST);
+  u.setEmailVerified(true); u.setActive(true); users.save(u);
  }
 
  private void seedDentist(UserRepository users,DentistRepository dentists,PasswordEncoder enc,

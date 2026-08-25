@@ -34,7 +34,7 @@ public class ClinicController {
   return s.createPatient(r,u.getRole()==Role.PATIENT?u.getId():null);
  }
 
- @PutMapping("/patients/{idNumber}") public Patient update(@PathVariable String idNumber,@Valid @RequestBody PatientRequest r){return s.updatePatient(idNumber,r);}
+ @PutMapping("/patients/{idNumber}") public Patient update(@PathVariable String idNumber,@Valid @RequestBody PatientRequest r,Authentication a){return s.updatePatient(idNumber,r,uid(a));}
 
  @GetMapping("/treatments") public List<Treatment> treatments(){return s.treatments();}
 
@@ -62,12 +62,19 @@ public class ClinicController {
  @GetMapping("/dentist/appointments")
  public List<Appointment> dentistAppointments(Authentication a){return s.dentistAppointments(uid(a));}
 
+ @GetMapping("/staff/dentists/{dentistId}/appointments")
+ public List<Appointment> staffDentistAppointments(@PathVariable Long dentistId,Authentication a){
+  return s.staffAppointmentsByDentist(dentistId,uid(a));
+ }
+
+
  @PutMapping("/dentist/appointments/{appointmentId}")
  public AppointmentUpdate updateAppointment(@PathVariable Long appointmentId,@Valid @RequestBody AppointmentUpdateRequest r,Authentication a){
   return s.dentistUpdate(uid(a),appointmentId,r);
  }
 
- @GetMapping("/patients/{idNumber}/updates") public List<AppointmentUpdate> patientUpdates(@PathVariable String idNumber){return s.patientUpdates(idNumber);}
+ @GetMapping("/patients/{idNumber}/updates") public List<AppointmentUpdate> patientUpdates(@PathVariable String idNumber,Authentication a){return s.patientUpdates(idNumber,uid(a));}
+ @GetMapping("/me/updates") public List<AppointmentUpdate> myUpdates(Authentication a){return s.myUpdates(uid(a));}
  @GetMapping("/updates") public List<AppointmentUpdate> updates(){return s.allUpdates();}
 
  @GetMapping("/appointments/{appointmentId}/billing-preview")
@@ -89,6 +96,22 @@ public class ClinicController {
       .body(pdf);
  }
 
- @PostMapping("/bills") public Bill bill(@Valid @RequestBody BillRequest r){return s.createBill(r);}
+ @PostMapping("/bills") public Bill bill(@Valid @RequestBody BillRequest r,Authentication a){return s.createBill(r,uid(a));}
  @GetMapping("/patients/{idNumber}/bills") public List<Bill> bills(@PathVariable String idNumber){return s.patientBills(idNumber);}
+
+ @PostMapping("/staff/payments")
+ public PaymentTransaction staffPayment(@Valid @RequestBody PaymentRequest r,Authentication a){
+  return s.processStaffPayment(r,uid(a));
+ }
+
+ @GetMapping("/staff/patients/{idNumber}/financials")
+ public List<StaffFinancialRecord> staffFinancials(@PathVariable String idNumber,Authentication a){
+  return s.staffFinancials(idNumber,uid(a));
+ }
+
+ @GetMapping("/staff/patients/{idNumber}/appointments")
+ public List<Appointment> staffPatientAppointments(@PathVariable String idNumber,Authentication a){
+  s.staffFinancials(idNumber,uid(a));
+  return s.patientAppointments(idNumber);
+ }
 }

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.*;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ClinicService {
@@ -52,8 +53,23 @@ public class ClinicService {
   return p.getUser()!=null && p.getUser().getEmail()!=null ? p.getUser().getEmail() : p.getEmail();
  }
 
+ private void requireStaff(User u){
+  if(u.getRole()!=Role.RECEPTIONIST && u.getRole()!=Role.ADMIN)
+   throw new IllegalArgumentException("This clinic operation is available only to reception staff.");
+ }
+
+ private User currentUser(Long userId){
+  return users.findById(userId).orElseThrow();
+ }
+
  @Transactional
  public Patient createPatient(PatientRequest r,Long userId){
+  if(userId!=null){
+   User u=currentUser(userId);
+   if(u.getRole()==Role.PATIENT){
+    if(patients.findByUserId(userId).isPresent()) throw new IllegalArgumentException("Your patient profile already exists.");
+   } else requireStaff(u);
+  }
   if(patients.existsByIdNumberIgnoreCase(r.idNumber().trim()))
    throw new IllegalArgumentException("A patient with this ID number already exists.");
   Patient p=new Patient();
@@ -68,8 +84,13 @@ public class ClinicService {
  }
 
  @Transactional
- public Patient updatePatient(String id,PatientRequest r){
+ public Patient updatePatient(String id,PatientRequest r,Long userId){
+  User u=currentUser(userId);
   Patient p=findPatient(id);
+  if(u.getRole()==Role.PATIENT){
+   Patient own=patientForUser(userId);
+   if(!own.getId().equals(p.getId())) throw new IllegalArgumentException("Patients can only update their own profile.");
+  } else requireStaff(u);
   p.setFullName(r.fullName().trim()); p.setAddress(r.address().trim());
   p.setContactNumber(r.contactNumber().trim()); p.setEmail(r.email());
   p.setGender(r.gender()); p.setDateOfBirth(r.dateOfBirth());
@@ -93,6 +114,8 @@ public class ClinicService {
  @Transactional
  public Appointment book(AppointmentRequest r, Long userId){
   User current=users.findById(userId).orElseThrow();
+  if(current.getRole()!=Role.PATIENT && current.getRole()!=Role.RECEPTIONIST && current.getRole()!=Role.ADMIN)
+   throw new IllegalArgumentException("Only patients and reception staff can create appointments.");
   Patient p=findPatient(r.patientIdNumber());
 
   if(current.getRole()==Role.PATIENT){
@@ -133,9 +156,42 @@ public class ClinicService {
   return appointments.findByPatientIdOrderByAppointmentDateTimeDesc(patientForUser(userId).getId());
  }
 
- public List<Appointment> dentistAppointments(Long userId){
-  Dentist d=dentists.findByUserId(userId).orElseThrow(()->new IllegalArgumentException("Dentist profile not found."));
+ public List<Appointment> staffAppointmentsByDentist(Long dentistId, Long userId){
+  requireStaff(currentUser(userId));
+  Dentist d=dentists.findById(dentistId)
+      .orElseThrow(()->new IllegalArgumentException("Selected dentist was not found."));
   return appointments.findByDentistIdOrderByAppointmentDateTimeAsc(d.getId());
+ }
+
+ public List<Appointment> dentistAppointments(Long userId) {
+
+  User user = users.findById(userId)
+          .orElseThrow(() ->
+                  new IllegalArgumentException("Logged-in user was not found.")
+          );
+
+  if (user.getRole() != Role.DENTIST) {
+   throw new IllegalArgumentException(
+           "Only dentist accounts can access the dentist appointment schedule."
+   );
+  }
+
+  Dentist dentist = dentists.findByUserId(userId)
+          .orElseThrow(() ->
+                  new IllegalArgumentException(
+                          "No dentist profile is linked to the logged-in dentist account."
+                  )
+          );
+
+  if (!dentist.isActive()) {
+   throw new IllegalArgumentException(
+           "This dentist account is currently inactive."
+   );
+  }
+
+  return appointments.findByDentistIdOrderByAppointmentDateTimeAsc(
+          dentist.getId()
+  );
  }
 
  @Transactional
@@ -151,8 +207,19 @@ public class ClinicService {
   return updates.save(u);
  }
 
- public List<AppointmentUpdate> patientUpdates(String id){
-  return updates.findByAppointmentPatientIdOrderByCreatedAtDesc(findPatient(id).getId());
+ public List<AppointmentUpdate> patientUpdates(String id,Long userId){
+  User u=currentUser(userId);
+  Patient p=findPatient(id);
+  if(u.getRole()==Role.PATIENT){
+   Patient own=patientForUser(userId);
+   if(!own.getId().equals(p.getId())) throw new IllegalArgumentException("Patients can only view their own updates.");
+  } else requireStaff(u);
+  return updates.findByAppointmentPatientIdOrderByCreatedAtDesc(p.getId());
+ }
+
+ public List<AppointmentUpdate> myUpdates(Long userId){
+  Patient p=patientForUser(userId);
+  return updates.findByAppointmentPatientIdOrderByCreatedAtDesc(p.getId());
  }
  public List<AppointmentUpdate> allUpdates(){return updates.findAllByOrderByCreatedAtDesc();}
  public List<Appointment> allAppointments(){
@@ -232,6 +299,56 @@ public class ClinicService {
   return payments.save(pt);
  }
 
+ @Transactional
+ public PaymentTransaction processStaffPayment(PaymentRequest r,Long userId){
+  User current=currentUser(userId);
+  requireStaff(current);
+  Appointment a=findAppointment(r.appointmentId());
+  if(bills.findByAppointmentId(a.getId()).isPresent())
+   throw new IllegalArgumentException("This appointment already has a bill or payment recorded.");
+  if(r.paymentMethod()==PaymentMethod.CARD){
+   if(r.cardholderName()==null || r.cardholderName().isBlank() || r.cardLast4()==null || !r.cardLast4().matches("\\d{4}"))
+    throw new IllegalArgumentException("Please provide valid card details.");
+  }
+  BillingPreview p=preview(a);
+  Bill b=new Bill();
+  b.setBillNumber("BILL-"+UUID.randomUUID().toString().substring(0,8).toUpperCase());
+  b.setAppointment(a); b.setPatient(a.getPatient()); b.setSubtotal(p.subtotal());
+  b.setConsultationFee(p.consultationFee()); b.setDiscount(p.discount()); b.setTax(p.tax()); b.setTotal(p.total());
+  b.setPaidAmount(p.total()); b.setPaymentMethod(r.paymentMethod()); b.setStatus(BillStatus.PAID);
+  b=bills.save(b);
+  PaymentTransaction pt=new PaymentTransaction(); pt.setBill(b);
+  pt.setTransactionReference("PAY-"+UUID.randomUUID().toString().substring(0,10).toUpperCase());
+  pt.setPaymentMethod(r.paymentMethod()); pt.setAmount(p.total()); pt.setCardholderName(r.cardholderName()); pt.setCardLast4(r.cardLast4());
+  pt.setSuccessful(true);
+  pt=payments.save(pt);
+  byte[] pdf=receipts.createReceipt(pt);
+  boolean sent=mail.sendWithAttachment(patientEmail(a.getPatient()),
+    "Sunrise Dental - Payment Receipt "+b.getBillNumber(),
+    "Dear "+a.getPatient().getFullName()+",\n\nYour payment of Rs. "+p.total().setScale(2).toPlainString()+" has been recorded by Sunrise Dental Clinic reception.\n"+
+    "Appointment: "+a.getAppointmentNumber()+"\nPayment reference: "+pt.getTransactionReference()+"\n\nYour PDF receipt is attached.",
+    b.getBillNumber()+".pdf",pdf);
+  pt.setReceiptEmailSent(sent);
+  return payments.save(pt);
+ }
+
+ public List<StaffFinancialRecord> staffFinancials(String idNumber,Long userId){
+  requireStaff(currentUser(userId));
+  Patient p=findPatient(idNumber);
+  return appointments.findByPatientIdOrderByAppointmentDateTimeDesc(p.getId()).stream().map(a->{
+   var billOpt=bills.findByAppointmentId(a.getId());
+   if(billOpt.isPresent()){
+    Bill b=billOpt.get();
+    Long paymentId=payments.findByBillId(b.getId()).map(PaymentTransaction::getId).orElse(null);
+    return new StaffFinancialRecord(a.getId(),a.getAppointmentNumber(),a.getAppointmentDateTime(),
+      dentistName(a.getDentist()),a.getTreatment().getName(),b.getTotal(),b.getPaidAmount(),b.getStatus(),b.getPaymentMethod(),paymentId);
+   }
+   BillingPreview preview=preview(a);
+   return new StaffFinancialRecord(a.getId(),a.getAppointmentNumber(),a.getAppointmentDateTime(),
+      dentistName(a.getDentist()),a.getTreatment().getName(),preview.total(),BigDecimal.ZERO,BillStatus.UNPAID,null,null);
+  }).toList();
+ }
+
  public byte[] receipt(Long paymentId,Long userId){
   PaymentTransaction pt=payments.findById(paymentId)
       .orElseThrow(()->new IllegalArgumentException("Payment receipt not found."));
@@ -244,7 +361,8 @@ public class ClinicService {
  }
 
  @Transactional
- public Bill createBill(BillRequest r){
+ public Bill createBill(BillRequest r,Long userId){
+  requireStaff(currentUser(userId));
   Appointment a=findAppointment(r.appointmentId());
   if(bills.findByAppointmentId(a.getId()).isPresent())
    throw new IllegalArgumentException("A bill already exists for this appointment.");

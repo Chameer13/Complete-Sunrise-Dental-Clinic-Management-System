@@ -17,6 +17,8 @@ import Dentist from "./pages/Dentist";
 import Billing from "./pages/Billing";
 import Payment from "./pages/Payment";
 import Updates from "./pages/Updates";
+import StaffRecords from "./pages/StaffRecords";
+import StaffAppointments from "./pages/StaffAppointments";
 
 
 export default function App() {
@@ -57,7 +59,7 @@ export default function App() {
             <Route
                 path="/patients"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute roles={["PATIENT","RECEPTIONIST","ADMIN"]}>
                         <Patient />
                     </ProtectedRoute>
                 }
@@ -67,7 +69,7 @@ export default function App() {
             <Route
                 path="/appointments"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute roles={["PATIENT","RECEPTIONIST","ADMIN"]}>
                         <Appointment />
                     </ProtectedRoute>
                 }
@@ -107,11 +109,38 @@ export default function App() {
                 }
             />
 
+            <Route
+                path="/staff/payment/:appointmentId"
+                element={
+                    <ProtectedRoute roles={["RECEPTIONIST","ADMIN"]}>
+                        <Payment />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/staff/records"
+                element={
+                    <ProtectedRoute roles={["RECEPTIONIST","ADMIN"]}>
+                        <StaffRecords />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/staff/appointments"
+                element={
+                    <ProtectedRoute roles={["RECEPTIONIST","ADMIN"]}>
+                        <StaffAppointments />
+                    </ProtectedRoute>
+                }
+            />
+
 
             <Route
                 path="/updates"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute roles={["PATIENT","RECEPTIONIST","ADMIN"]}>
                         <Updates />
                     </ProtectedRoute>
                 }

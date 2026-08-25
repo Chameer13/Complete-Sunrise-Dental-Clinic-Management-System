@@ -1813,3 +1813,187 @@ input {
     text-align: left;
   }
 }
+.dentist-message {
+    margin: 18px 0;
+    padding: 13px 16px;
+    border-radius: 8px;
+    background: #edf5ff;
+    border-left: 4px solid #2f80ed;
+    color: #17324d;
+    font-size: 14px;
+}
+
+.dentist-loading {
+    padding: 50px 20px;
+    text-align: center;
+    color: #6b7c8f;
+}
+
+.loading-spinner {
+    width: 30px;
+    height: 30px;
+    margin: 0 auto 15px;
+    border: 3px solid #dbe3ec;
+    border-top-color: #0b2a4a;
+    border-radius: 50%;
+    animation: dentistSpin 0.8s linear infinite;
+}
+
+@keyframes dentistSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.dentist-empty {
+    padding: 55px 20px;
+    text-align: center;
+    border: 1px dashed #dbe3ec;
+    border-radius: 12px;
+    background: #fafcff;
+}
+
+.empty-icon {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eaf8f0;
+    color: #159957;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.dentist-empty h2 {
+    margin: 0 0 8px;
+    color: #0b2a4a;
+    font-size: 20px;
+}
+
+.dentist-empty p {
+    margin: 0;
+    color: #6b7c8f;
+}
+
+.dentist-table {
+    margin-top: 25px;
+    overflow-x: auto;
+}
+
+.dentist-table-header,
+.dentist-table .row {
+    min-width: 900px;
+}
+
+.dentist-table-header {
+    display: grid;
+    grid-template-columns:
+        1.2fr
+        1.3fr
+        1.2fr
+        .8fr
+        1.1fr;
+
+    gap: 15px;
+    padding: 13px 16px;
+
+    background: #0b2a4a;
+    color: #ffffff;
+
+    border-radius: 8px 8px 0 0;
+
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.dentist-table .row {
+    display: grid;
+    grid-template-columns:
+        1.2fr
+        1.3fr
+        1.2fr
+        .8fr
+        1.1fr;
+
+    gap: 15px;
+    align-items: center;
+
+    padding: 17px 16px;
+
+    border-bottom: 1px solid #e5ebf1;
+    background: #ffffff;
+}
+
+.dentist-table .row:hover {
+    background: #f8fbff;
+}
+
+.dentist-table .row b {
+    display: block;
+    color: #0b2a4a;
+    font-size: 14px;
+}
+
+.dentist-table .row small {
+    display: block;
+    margin-top: 5px;
+    color: #718196;
+    font-size: 12px;
+}
+
+.dentist-update-button {
+    padding: 9px 13px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #0b2a4a;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 650;
+
+    cursor: pointer;
+}
+
+.dentist-update-button:hover {
+    background: #123e68;
+}
+
+.dentist-update-button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.appointment-status {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.appointment-status.booked {
+    background: #edf5ff;
+    color: #2469aa;
+}
+
+.appointment-status.confirmed {
+    background: #eaf8f0;
+    color: #16824c;
+}
+
+.appointment-status.completed {
+    background: #e9f7f4;
+    color: #167c70;
+}
+
+.appointment-status.cancelled {
+    background: #fff0f0;
+    color: #c23b3b;
+}
