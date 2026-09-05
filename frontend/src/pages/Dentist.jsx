@@ -231,7 +231,7 @@ export default function Dentist() {
                     <div className="doctor-name">
 
                         <strong>
-                            Dr. {user?.fullName || "Dentist"}
+                             {user?.fullName || "Dentist"}
                         </strong>
 
                         <small>
@@ -776,87 +776,350 @@ export default function Dentist() {
                 </section>
 
 
+{historyPatient && (
+    <div
+        className="history-modal-backdrop"
+        onClick={() => setHistoryPatient(null)}
+    >
+        <div
+            className="history-modal"
+            onClick={(e) => e.stopPropagation()}
+        >
 
-                {historyPatient && (
-                    <div className="history-modal-backdrop" onClick={() => setHistoryPatient(null)}>
-                        <div className="history-modal" onClick={e => e.stopPropagation()}>
-                            <div className="history-modal-head">
-                                <div><span>PATIENT CLINICAL HISTORY</span><h2>{historyPatient.fullName}</h2><p>NIC: {historyPatient.idNumber}</p></div>
-                                <button onClick={() => setHistoryPatient(null)}>×</button>
-                            </div>
-                            {historyLoading ? <p>Loading prescription history...</p> : history.length ? history.map(p => <article className="history-item" key={p.id}>
-                                <div><strong>Prescription #{p.id}</strong><small>{String(p.prescribedAt || "").replace("T", " ")}</small></div>
-                                <p><b>Diagnosis:</b> {p.diagnosis}</p><p><b>Medicines:</b> {p.medicines}</p>{p.instructions && <p><b>Instructions:</b> {p.instructions}</p>}
-                            </article>) : <div className="empty-history"><h3>No previous prescriptions</h3><p>No prescription has been recorded for this patient yet.</p></div>}
-                        </div>
+            {/* =========================
+                MODAL HEADER
+            ========================== */}
+
+            <div className="history-modal-header">
+
+                <div className="history-patient-profile">
+
+                    <div className="history-patient-avatar">
+                        {historyPatient?.fullName
+                            ?.charAt(0)
+                            ?.toUpperCase() || "P"}
                     </div>
+
+                    <div>
+
+                        <span className="history-label">
+                            PATIENT PRESCRIPTION HISTORY
+                        </span>
+
+                        <h2>
+                            {historyPatient?.fullName || "Patient"}
+                        </h2>
+
+                        <div className="history-patient-meta">
+
+                            <span>
+                                Patient ID:{" "}
+                                {historyPatient?.idNumber ||
+                                    "Protected"}
+                            </span>
+
+                            <span className="history-dot">
+                                •
+                            </span>
+
+                            <span>
+                                {history.length} Prescription
+                                {history.length !== 1 ? "s" : ""}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    className="history-close-btn"
+                    onClick={() => setHistoryPatient(null)}
+                    aria-label="Close prescription history"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            {/* =========================
+                MODAL BODY
+            ========================== */}
+
+            <div className="history-modal-body">
+
+                {historyLoading ? (
+
+                    <div className="history-loading">
+
+                        <div className="history-spinner"></div>
+
+                        <h3>
+                            Loading clinical history
+                        </h3>
+
+                        <p>
+                            Retrieving this patient's previous
+                            prescriptions...
+                        </p>
+
+                    </div>
+
+                ) : history.length ? (
+
+                    <>
+
+                        {/* SUMMARY */}
+
+                        <div className="history-summary">
+
+                            <div className="history-summary-icon">
+                                Rx
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Prescription Records
+                                </strong>
+
+                                <span>
+                                    Previous prescriptions issued
+                                    by the dental care team
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* TIMELINE */}
+
+                        <div className="history-timeline">
+
+                            {history.map((p, index) => (
+
+                                <article
+                                    className="history-prescription"
+                                    key={p.id}
+                                >
+
+                                    {/* TIMELINE NUMBER */}
+
+                                    <div className="history-timeline-side">
+
+                                        <div className="history-number">
+                                            {history.length - index}
+                                        </div>
+
+                                        {index !== history.length - 1 && (
+                                            <div className="history-line"></div>
+                                        )}
+
+                                    </div>
+
+
+                                    {/* PRESCRIPTION CARD */}
+
+                                    <div className="history-record">
+
+                                        {/* RECORD HEADER */}
+
+                                        <div className="history-record-header">
+
+                                            <div>
+
+                                                <span>
+                                                    PRESCRIPTION
+                                                </span>
+
+                                                <h3>
+                                                    Prescription #{p.id}
+                                                </h3>
+
+                                            </div>
+
+                                            <div className="history-date">
+
+                                                <span>
+                                                    ISSUED
+                                                </span>
+
+                                                <strong>
+                                                    {String(
+                                                        p.prescribedAt || ""
+                                                    ).replace(
+                                                        "T",
+                                                        " "
+                                                    )}
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {/* DIAGNOSIS */}
+
+                                        <div className="history-clinical-row">
+
+                                            <div className="history-info-icon diagnosis">
+                                                D
+                                            </div>
+
+                                            <div>
+
+                                                <span>
+                                                    Clinical Diagnosis
+                                                </span>
+
+                                                <p>
+                                                    {p.diagnosis ||
+                                                        "Not specified"}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {/* MEDICINES */}
+
+                                        <div className="history-clinical-row">
+
+                                            <div className="history-info-icon medicine">
+                                                M
+                                            </div>
+
+                                            <div>
+
+                                                <span>
+                                                    Prescribed Medicines
+                                                </span>
+
+                                                <p>
+                                                    {p.medicines ||
+                                                        "No medicines specified"}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {/* INSTRUCTIONS */}
+
+                                        {p.instructions && (
+
+                                            <div className="history-clinical-row">
+
+                                                <div className="history-info-icon instruction">
+                                                    i
+                                                </div>
+
+                                                <div>
+
+                                                    <span>
+                                                        Instructions &
+                                                        Precautions
+                                                    </span>
+
+                                                    <p>
+                                                        {p.instructions}
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        )}
+
+
+                                        {/* DENTIST */}
+
+                                        <div className="history-dentist">
+
+                                            <div className="history-dentist-avatar">
+                                                Dr
+                                            </div>
+
+                                            <div>
+
+                                                <span>
+                                                    PRESCRIBED BY
+                                                </span>
+
+                                                <strong>
+                                                    {p.dentist?.displayName ||
+                                                        "Dentist"}
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </article>
+
+                            ))}
+
+                        </div>
+
+                    </>
+
+                ) : (
+
+                    /* EMPTY STATE */
+
+                    <div className="history-empty">
+
+                        <div className="history-empty-icon">
+                            Rx
+                        </div>
+
+                        <h3>
+                            No Previous Prescriptions
+                        </h3>
+
+                        <p>
+                            There are no prescription records
+                            available for this patient.
+                        </p>
+
+                    </div>
+
                 )}
 
-
-                {/* =================================================
-                    CLINICAL INFORMATION
-                ================================================= */}
-
-                <section className="clinical-info-grid">
+            </div>
 
 
-                    <div className="clinical-info-card">
+            {/* =========================
+                MODAL FOOTER
+            ========================== */}
 
-                        <div className="clinical-card-icon">
-                            🦷
-                        </div>
+            <div className="history-modal-footer">
 
-                        <div>
+                <span>
+                    🔒 Confidential clinical information
+                </span>
 
-                            <span>
-                                DENTIST WORKSPACE
-                            </span>
+                <button
+                    onClick={() => setHistoryPatient(null)}
+                >
+                    Close
+                </button>
 
-                            <h3>
-                                Patient Communication
-                            </h3>
+            </div>
 
-                            <p>
-                                Send important appointment updates
-                                directly to patients. Updates can
-                                include treatment information,
-                                appointment status and follow-up
-                                instructions.
-                            </p>
-
-                        </div>
-
-                    </div>
+        </div>
+    </div>
+)}
 
 
-                    <div className="clinical-info-card">
-
-                        <div className="clinical-card-icon">
-                            🔒
-                        </div>
-
-                        <div>
-
-                            <span>
-                                CLINICAL PRIVACY
-                            </span>
-
-                            <h3>
-                                Secure Patient Information
-                            </h3>
-
-                            <p>
-                                Patient records and clinical information
-                                are restricted to authorised healthcare
-                                staff within the Sunrise Dental system.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
+                
 
 
                

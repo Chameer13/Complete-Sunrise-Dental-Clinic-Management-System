@@ -530,8 +530,8 @@ export default function Inquiry() {
                         {patient
                             ? "Review your previous questions and dentist responses."
                             : dentist
-                                ? "Respond to patient questions and maintain a clear communication history."
-                                : "Review inquiry records for front-desk support."
+                                
+                                
                         }
 
                     </p>

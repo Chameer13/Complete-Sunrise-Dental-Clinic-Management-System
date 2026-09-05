@@ -1,913 +1,1120 @@
-import {useEffect,useState} from "react";
+import { useEffect, useState } from "react";
 import api from "../services/api";
-import {useAuth} from "../context/AuthContext";
-import "../styles/AdvancedFeatures.css";
+import { useAuth } from "../context/AuthContext";
+import "./Prescriptions.css";
 
-export default function Prescriptions(){
+export default function Prescriptions() {
+    const { user } = useAuth();
 
-    const {user}=useAuth();
+    const role = user?.role;
 
-    const role=user?.role;
+    const patient = role === "PATIENT";
+    const dentist = role === "DENTIST";
+    const staff = role === "RECEPTIONIST" || role === "ADMIN";
 
-    const patient=role==="PATIENT";
-    const dentist=role==="DENTIST";
-    const staff=role==="RECEPTIONIST"||role==="ADMIN";
+    const [items, setItems] = useState([]);
+    const [apps, setApps] = useState([]);
+    const [search, setSearch] = useState("");
+    const [msg, setMsg] = useState("");
+    const [msgType, setMsgType] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [saving, setSaving] = useState(false);
 
-    const [items,setItems]=useState([]);
-    const [apps,setApps]=useState([]);
-    const [search,setSearch]=useState("");
-    const [msg,setMsg]=useState("");
-
-    const [form,setForm]=useState({
-        diagnosis:"",
-        medicines:"",
-        instructions:""
+    const [form, setForm] = useState({
+        appointmentId: null,
+        diagnosis: "",
+        medicines: "",
+        instructions: ""
     });
 
-    const [disp,setDisp]=useState({});
-    const [dispHistory,setDispHistory]=useState({});
+    const [disp, setDisp] = useState({});
+    const [dispHistory, setDispHistory] = useState({});
+    const [dispensingId, setDispensingId] = useState(null);
 
+    /* =========================
+       HELPERS
+    ========================= */
 
-    /* ================= LOAD DATA ================= */
+    const showMessage = (message, type = "info") => {
+        setMsg(message);
+        setMsgType(type);
 
-    const load=async()=>{
-
-        try{
-
-            if(patient){
-
-                const r=await api.get("/me/prescriptions");
-
-                setItems(r.data||[]);
-
-            }
-            else if(dentist){
-
-                const r=await api.get("/dentist/appointments");
-
-                setApps(r.data||[]);
-
-            }
-
-        }catch(e){
-
-            setMsg(
-                e.response?.data?.message ||
-                "Unable to load prescriptions."
-            );
-
-        }
-
+        setTimeout(() => {
+            setMsg("");
+        }, 4500);
     };
 
+    const formatDateTime = (value) => {
+        if (!value) return "Date not available";
 
-    useEffect(()=>{
+        try {
+            return new Date(value).toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        } catch {
+            return value.replace("T", " ");
+        }
+    };
 
-        load();
+    const initials = (name = "Patient") => {
+        return name
+            .split(" ")
+            .slice(0, 2)
+            .map(word => word.charAt(0))
+            .join("")
+            .toUpperCase();
+    };
 
-    },[role]);
+    /* =========================
+       LOAD DATA
+    ========================= */
 
+    const load = async () => {
+        setLoading(true);
 
-    /* ================= CREATE PRESCRIPTION ================= */
-
-    const prescribe=async id=>{
-
-        if(
-            !form.diagnosis.trim() ||
-            !form.medicines.trim()
-        ){
-
-            setMsg(
-                "Please enter diagnosis and medicines before saving."
+        try {
+            if (patient) {
+                const r = await api.get("/me/prescriptions");
+                setItems(r.data || []);
+            } else if (dentist) {
+                const r = await api.get("/dentist/appointments");
+                setApps(r.data || []);
+            }
+        } catch (e) {
+            showMessage(
+                e.response?.data?.message ||
+                "Unable to load prescription information.",
+                "error"
             );
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
+        load();
+    }, [role]);
+
+    /* =========================
+       CREATE PRESCRIPTION
+    ========================= */
+
+    const prescribe = async (id) => {
+        if (!form.diagnosis.trim()) {
+            showMessage("Please enter the clinical diagnosis.", "error");
             return;
         }
 
-        try{
+        if (!form.medicines.trim()) {
+            showMessage("Please enter the prescribed medicines.", "error");
+            return;
+        }
 
+        setSaving(true);
+
+        try {
             await api.post(
                 `/dentist/appointments/${id}/prescription`,
-                form
+                {
+                    diagnosis: form.diagnosis,
+                    medicines: form.medicines,
+                    instructions: form.instructions
+                }
             );
 
-            setMsg(
-                "Prescription saved successfully."
+            showMessage(
+                "Prescription saved successfully.",
+                "success"
             );
 
             setForm({
-                diagnosis:"",
-                medicines:"",
-                instructions:""
+                appointmentId: null,
+                diagnosis: "",
+                medicines: "",
+                instructions: ""
             });
 
-            load();
+            await load();
 
-        }catch(e){
-
-            setMsg(
+        } catch (e) {
+            showMessage(
                 e.response?.data?.message ||
-                "Unable to save prescription."
+                "Unable to save prescription.",
+                "error"
             );
-
+        } finally {
+            setSaving(false);
         }
-
     };
 
+    /* =========================
+       STAFF SEARCH
+    ========================= */
 
-    /* ================= STAFF SEARCH ================= */
-
-    const staffSearch=async()=>{
-
-        if(!search.trim()){
-
-            setMsg(
-                "Enter the patient NIC / ID number."
+    const staffSearch = async () => {
+        if (!search.trim()) {
+            showMessage(
+                "Please enter the patient's NIC or registered patient ID.",
+                "error"
             );
-
             return;
         }
 
-        try{
+        setLoading(true);
 
-            const r=await api.get(
+        try {
+            const r = await api.get(
                 `/staff/patients/${encodeURIComponent(
                     search.trim()
                 )}/prescriptions`
             );
 
             const rows = r.data || [];
+
             setItems(rows);
-            const historyEntries = await Promise.all(rows.map(async p => {
-                try {
-                    const d = await api.get(`/staff/prescriptions/${p.id}/dispensations`);
-                    return [p.id, d.data || []];
-                } catch { return [p.id, []]; }
-            }));
-            setDispHistory(Object.fromEntries(historyEntries));
-            setMsg(rows.length ? "Prescriptions loaded successfully." : "No prescriptions found for this patient.");
 
-        }catch(e){
+            const historyEntries = await Promise.all(
+                rows.map(async (p) => {
+                    try {
+                        const d = await api.get(
+                            `/staff/prescriptions/${p.id}/dispensations`
+                        );
 
+                        return [p.id, d.data || []];
+
+                    } catch {
+                        return [p.id, []];
+                    }
+                })
+            );
+
+            setDispHistory(
+                Object.fromEntries(historyEntries)
+            );
+
+            if (rows.length) {
+                showMessage(
+                    `${rows.length} prescription${rows.length > 1 ? "s" : ""} found.`,
+                    "success"
+                );
+            } else {
+                showMessage(
+                    "No prescriptions found for this patient.",
+                    "info"
+                );
+            }
+
+        } catch (e) {
             setItems([]);
 
-            setMsg(
+            showMessage(
                 e.response?.data?.message ||
-                "Patient not found."
+                "Patient not found. Please check the NIC or patient ID.",
+                "error"
             );
-
+        } finally {
+            setLoading(false);
         }
-
     };
 
+    /* =========================
+       DISPENSE MEDICINE
+    ========================= */
 
-    /* ================= DISPENSE MEDICINE ================= */
+    const dispense = async (prescription) => {
+        const x = disp[prescription.id];
 
-    const dispense=async p=>{
-
-        const x=disp[p.id];
-
-        if(
-            !x?.medicineName ||
-            !x?.quantity
-        ){
-
-            setMsg(
-                "Enter medicine name and quantity."
-            );
-
+        if (!x?.medicineName?.trim()) {
+            showMessage("Enter the medicine name.", "error");
             return;
         }
 
-        try{
-            const existing = (dispHistory[p.id] || []).some(m => String(m.medicineName || "").trim().toLowerCase() === String(x.medicineName).trim().toLowerCase());
-            if (existing) {
-                setMsg("This medicine has already been recorded for this prescription.");
-                return;
-            }
+        if (!x?.quantity?.trim()) {
+            showMessage("Enter the quantity provided.", "error");
+            return;
+        }
 
+        const existing = (
+            dispHistory[prescription.id] || []
+        ).some(
+            m =>
+                String(m.medicineName || "")
+                    .trim()
+                    .toLowerCase() ===
+                String(x.medicineName)
+                    .trim()
+                    .toLowerCase()
+        );
+
+        if (existing) {
+            showMessage(
+                "This medicine has already been recorded for this prescription.",
+                "error"
+            );
+            return;
+        }
+
+        setDispensingId(prescription.id);
+
+        try {
             await api.post(
-                `/staff/prescriptions/${p.id}/dispense`,
+                `/staff/prescriptions/${prescription.id}/dispense`,
                 x
             );
 
-            setMsg(
-                "Medicine dispensation recorded successfully."
+            showMessage(
+                "Medicine dispensation recorded successfully.",
+                "success"
             );
 
-            setDisp({ ...disp, [p.id]:{} });
-            const refreshed = await api.get(`/staff/prescriptions/${p.id}/dispensations`);
-            setDispHistory(h => ({ ...h, [p.id]: refreshed.data || [] }));
+            setDisp(prev => ({
+                ...prev,
+                [prescription.id]: {}
+            }));
 
-        }catch(e){
+            const refreshed = await api.get(
+                `/staff/prescriptions/${prescription.id}/dispensations`
+            );
 
-            setMsg(
+            setDispHistory(prev => ({
+                ...prev,
+                [prescription.id]: refreshed.data || []
+            }));
+
+        } catch (e) {
+            showMessage(
                 e.response?.data?.message ||
-                "Unable to record dispensation."
+                "Unable to record medicine dispensation.",
+                "error"
             );
-
+        } finally {
+            setDispensingId(null);
         }
-
     };
 
+    /* =========================
+       UPDATE DISPENSING FIELD
+    ========================= */
+
+    const updateDisp = (id, field, value) => {
+        setDisp(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                [field]: value
+            }
+        }));
+    };
+
+    /* =========================
+       RENDER
+    ========================= */
 
     return (
+        <div className="prescription-page">
 
-        <div className="app">
+            {/* HEADER */}
 
+            <header className="rx-header">
 
-            {/* =================================================
-                PROFESSIONAL SUNRISE DENTAL HEADER
-            ================================================= */}
+                <div className="rx-brand">
 
-            <header>
+                    <div className="rx-brand-icon">
+                        +
+                    </div>
 
-                <div className="header-brand">
-
-                    <span className="header-icon">
-                        ✦
-                    </span>
-
-                    <b>
-                        PRESCRIPTIONS
-                    </b>
+                    <div>
+                        <strong>Sunrise Dental</strong>
+                        <span>Clinical Management System</span>
+                    </div>
 
                 </div>
 
+                <div className="rx-header-right">
 
-                <a
-                    href="/dashboard"
-                    className="dashboard-button"
-                >
-                    Dashboard
-                </a>
+                    <div className="rx-user">
+
+                        <div className="rx-user-avatar">
+                            {initials(
+                                user?.fullName ||
+                                user?.displayName ||
+                                "User"
+                            )}
+                        </div>
+
+                        <div>
+                            <strong>
+                                {user?.fullName ||
+                                    user?.displayName ||
+                                    "User"}
+                            </strong>
+
+                            <span>
+                                {role || "USER"}
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <a
+                        href="/dashboard"
+                        className="rx-dashboard-btn"
+                    >
+                        ← Dashboard
+                    </a>
+
+                </div>
 
             </header>
 
 
-            {/* =================================================
-                MAIN CONTENT
-            ================================================= */}
+            <main className="rx-main">
 
-            <main>
+                {/* PAGE HERO */}
 
-                <div className="feature-page">
+                <section className="rx-hero">
 
+                    <div>
 
-                    {/* ================= PAGE TITLE ================= */}
-
-                    <div className="feature-title">
-
-                        <span>
-                            CLINICAL PRESCRIPTIONS
-                        </span>
+                        <div className="rx-breadcrumb">
+                            CLINICAL CARE
+                            <span>/</span>
+                            PRESCRIPTIONS
+                        </div>
 
                         <h1>
-
                             {patient
-                                ?"My Prescriptions"
-                                :dentist
-                                    ?"Prescribe for Your Patients"
-                                    :"Prescription & Medicine Desk"
+                                ? "My Prescriptions"
+                                : dentist
+                                    ? "Prescription Workspace"
+                                    : "Prescription & Medicine Desk"
                             }
-
                         </h1>
 
-
                         <p>
-
                             {patient
-
-                                ?"View prescriptions issued by your dentists, including diagnosis, medicines and treatment instructions."
-
-                                :dentist
-
-                                    ?"Create and securely manage prescriptions for appointments assigned to you."
-
-                                    :"Search patient prescriptions by NIC / ID, review dentist instructions and record medicines physically provided at reception."
+                                ? "View prescriptions issued by your dental care team and follow the treatment instructions provided."
+                                : dentist
+                                    ? "Create and securely manage prescriptions for your scheduled patients."
+                                    : "Search patient prescriptions, review clinical instructions and record medicines provided."
                             }
-
                         </p>
 
                     </div>
 
+                    <div className="rx-hero-icon">
+                        <div className="rx-cross">
+                            +
+                        </div>
+                    </div>
 
-                    {/* =================================================
-                        DENTIST PRESCRIPTION EDITOR
-                    ================================================= */}
+                </section>
 
-                    {dentist && (
 
-                        <>
+                {/* MESSAGE */}
 
-                            <div className="section-heading">
+                {msg && (
+                    <div
+                        className={`rx-message ${msgType}`}
+                        role="alert"
+                    >
+                        <span className="message-icon">
+                            {msgType === "success"
+                                ? "✓"
+                                : msgType === "error"
+                                    ? "!"
+                                    : "i"}
+                        </span>
 
-                                <div>
+                        <span>{msg}</span>
 
-                                    <span className="feature-kicker">
-                                        DENTIST WORKSPACE
-                                    </span>
+                        <button
+                            onClick={() => setMsg("")}
+                            aria-label="Close message"
+                        >
+                            ×
+                        </button>
 
-                                    <h2>
-                                        Patient Prescriptions
-                                    </h2>
+                    </div>
+                )}
 
-                                    <p>
-                                        Select an appointment and enter the clinical prescription details.
-                                    </p>
+
+                {/* LOADING */}
+
+                {loading && (
+                    <div className="rx-loading">
+                        <div className="rx-spinner"></div>
+                        <span>Loading clinical records...</span>
+                    </div>
+                )}
+
+
+                {/* ============================================
+                    DENTIST WORKSPACE
+                ============================================ */}
+
+                {dentist && !loading && (
+
+                    <section className="rx-section">
+
+                        <div className="rx-section-heading">
+
+                            <div>
+
+                                <span className="rx-label">
+                                    DENTIST WORKSPACE
+                                </span>
+
+                                <h2>
+                                    Scheduled Patient Appointments
+                                </h2>
+
+                                <p>
+                                    Select an appointment below to create a prescription.
+                                </p>
+
+                            </div>
+
+                            <div className="rx-count">
+                                <strong>{apps.length}</strong>
+                                <span>Appointments</span>
+                            </div>
+
+                        </div>
+
+
+                        {apps.length ? (
+
+                            <div className="appointment-grid">
+
+                                {apps.map(a => (
+
+                                    <article
+                                        className="appointment-card"
+                                        key={a.id}
+                                    >
+
+                                        {/* APPOINTMENT TOP */}
+
+                                        <div className="appointment-top">
+
+                                            <div className="appointment-number">
+                                                <span>APPOINTMENT</span>
+                                                <strong>
+                                                    {a.appointmentNumber ||
+                                                        `#${a.id}`}
+                                                </strong>
+                                            </div>
+
+                                            <span className="rx-status">
+                                                {a.status || "SCHEDULED"}
+                                            </span>
+
+                                        </div>
+
+
+                                        {/* PATIENT */}
+
+                                        <div className="patient-summary">
+
+                                            <div className="patient-avatar">
+                                                {initials(
+                                                    a.patient?.fullName
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <span>Patient</span>
+
+                                                <h3>
+                                                    {a.patient?.fullName ||
+                                                        "Patient"}
+                                                </h3>
+
+                                                <small>
+                                                    Patient ID:{" "}
+                                                    {a.patient?.idNumber ||
+                                                        "Protected"}
+                                                </small>
+                                            </div>
+
+                                        </div>
+
+
+                                        {/* APPOINTMENT DETAILS */}
+
+                                        <div className="appointment-details">
+
+                                            <div>
+                                                <span>Date & Time</span>
+                                                <strong>
+                                                    {formatDateTime(
+                                                        a.appointmentDateTime
+                                                    )}
+                                                </strong>
+                                            </div>
+
+                                            <div>
+                                                <span>Treatment</span>
+                                                <strong>
+                                                    {a.treatment?.name ||
+                                                        "Dental Treatment"}
+                                                </strong>
+                                            </div>
+
+                                        </div>
+
+
+                                        {/* PRESCRIPTION FORM */}
+
+                                        <div className="clinical-form">
+
+                                            <div className="form-heading">
+
+                                                <div className="form-icon">
+                                                    Rx
+                                                </div>
+
+                                                <div>
+                                                    <h3>
+                                                        New Prescription
+                                                    </h3>
+
+                                                    <p>
+                                                        Enter clinical treatment details
+                                                    </p>
+                                                </div>
+
+                                            </div>
+
+
+                                            <label>
+                                                <span>
+                                                    Diagnosis
+                                                    <b>*</b>
+                                                </span>
+
+                                                <input
+                                                    type="text"
+                                                    placeholder="Enter clinical diagnosis"
+                                                    value={
+                                                        form.appointmentId === a.id
+                                                            ? form.diagnosis
+                                                            : ""
+                                                    }
+                                                    onChange={e =>
+                                                        setForm({
+                                                            ...form,
+                                                            appointmentId: a.id,
+                                                            diagnosis:
+                                                                e.target.value
+                                                        })
+                                                    }
+                                                />
+                                            </label>
+
+
+                                            <label>
+                                                <span>
+                                                    Medicines
+                                                    <b>*</b>
+                                                </span>
+
+                                                <textarea
+                                                    rows="4"
+                                                    placeholder="Example: Amoxicillin 500mg — 1 capsule 3 times daily"
+                                                    value={
+                                                        form.appointmentId === a.id
+                                                            ? form.medicines
+                                                            : ""
+                                                    }
+                                                    onChange={e =>
+                                                        setForm({
+                                                            ...form,
+                                                            appointmentId: a.id,
+                                                            medicines:
+                                                                e.target.value
+                                                        })
+                                                    }
+                                                />
+                                            </label>
+
+
+                                            <label>
+                                                <span>
+                                                    Instructions & Precautions
+                                                </span>
+
+                                                <textarea
+                                                    rows="3"
+                                                    placeholder="Enter dosage instructions, precautions or follow-up advice"
+                                                    value={
+                                                        form.appointmentId === a.id
+                                                            ? form.instructions
+                                                            : ""
+                                                    }
+                                                    onChange={e =>
+                                                        setForm({
+                                                            ...form,
+                                                            appointmentId: a.id,
+                                                            instructions:
+                                                                e.target.value
+                                                        })
+                                                    }
+                                                />
+                                            </label>
+
+
+                                            <button
+                                                className="rx-primary-btn"
+                                                disabled={
+                                                    saving &&
+                                                    form.appointmentId === a.id
+                                                }
+                                                onClick={() =>
+                                                    prescribe(a.id)
+                                                }
+                                            >
+                                                {saving &&
+                                                form.appointmentId === a.id
+                                                    ? "Saving Prescription..."
+                                                    : "Save Prescription"}
+                                            </button>
+
+                                        </div>
+
+                                    </article>
+
+                                ))}
+
+                            </div>
+
+                        ) : (
+
+                            <div className="rx-empty">
+
+                                <div className="empty-icon">
+                                    ✓
+                                </div>
+
+                                <h3>
+                                    No Appointments Available
+                                </h3>
+
+                                <p>
+                                    Appointments assigned to you will appear here.
+                                </p>
+
+                            </div>
+
+                        )}
+
+                    </section>
+
+                )}
+
+
+                {/* ============================================
+                    STAFF SEARCH
+                ============================================ */}
+
+                {staff && (
+
+                    <section className="rx-section">
+
+                        <div className="search-panel">
+
+                            <div className="search-panel-icon">
+                                ⌕
+                            </div>
+
+                            <div className="search-content">
+
+                                <span className="rx-label">
+                                    RECEPTION DESK
+                                </span>
+
+                                <h2>
+                                    Find Patient Prescriptions
+                                </h2>
+
+                                <p>
+                                    Search using the patient's NIC or registered patient ID.
+                                </p>
+
+                                <div className="search-box">
+
+                                    <input
+                                        type="text"
+                                        placeholder="Enter patient NIC / Patient ID"
+                                        value={search}
+                                        onChange={e =>
+                                            setSearch(e.target.value)
+                                        }
+                                        onKeyDown={e => {
+                                            if (e.key === "Enter") {
+                                                staffSearch();
+                                            }
+                                        }}
+                                    />
+
+                                    <button
+                                        className="rx-primary-btn"
+                                        onClick={staffSearch}
+                                        disabled={loading}
+                                    >
+                                        {loading
+                                            ? "Searching..."
+                                            : "Search Patient"}
+                                    </button>
 
                                 </div>
 
                             </div>
 
+                        </div>
 
-                            <div className="prescription-grid">
+                    </section>
 
-                                {apps.length ? (
+                )}
 
-                                    apps.map(a=>(
 
-                                        <article
-                                            className="feature-card prescription-editor"
-                                            key={a.id}
-                                        >
+                {/* ============================================
+                    PATIENT / STAFF PRESCRIPTIONS
+                ============================================ */}
 
+                {(patient || staff) && !loading && (
 
-                                            {/* APPOINTMENT HEADER */}
+                    <section className="rx-section">
 
-                                            <div className="prescription-head">
-
-                                                <div>
-
-                                                    <b>
-                                                        {a.appointmentNumber}
-                                                    </b>
-
-                                                    <h3>
-                                                        {a.patient?.fullName ||
-                                                            "Patient"}
-                                                    </h3>
-
-                                                    <small>
-
-                                                        {a.appointmentDateTime?.replace(
-                                                            "T",
-                                                            " "
-                                                        )}
-
-                                                        {" · "}
-
-                                                        {a.treatment?.name ||
-                                                            "Dental Treatment"}
-
-                                                    </small>
-
-                                                </div>
-
-
-                                                <span className="status-pill booked">
-
-                                                    {a.status}
-
-                                                </span>
-
-                                            </div>
-
-
-                                            {/* PATIENT INFORMATION */}
-
-                                            <div className="clinical-patient-info">
-
-                                                <div>
-
-                                                    <span>
-                                                        Patient ID
-                                                    </span>
-
-                                                    <strong>
-                                                        {a.patient?.idNumber ||
-                                                            "Protected"}
-                                                    </strong>
-
-                                                </div>
-
-
-                                                <div>
-
-                                                    <span>
-                                                        Treatment
-                                                    </span>
-
-                                                    <strong>
-                                                        {a.treatment?.name ||
-                                                            "Dental Treatment"}
-                                                    </strong>
-
-                                                </div>
-
-                                            </div>
-
-
-                                            {/* DIAGNOSIS */}
-
-                                            <label className="clinical-field">
-
-                                                Diagnosis
-
-                                                <input
-
-                                                    placeholder="Enter clinical diagnosis"
-
-                                                    value={
-                                                        form.appointmentId===a.id
-                                                        ?form.diagnosis
-                                                        :""
-                                                    }
-
-                                                    onChange={e=>
-
-                                                        setForm({
-
-                                                            ...form,
-
-                                                            appointmentId:a.id,
-
-                                                            diagnosis:
-                                                                e.target.value
-
-                                                        })
-
-                                                    }
-
-                                                />
-
-                                            </label>
-
-
-                                            {/* MEDICINES */}
-
-                                            <label className="clinical-field">
-
-                                                Medicines
-
-                                                <textarea
-
-                                                    placeholder="Example: Amoxicillin 500mg — 1 capsule 3 times daily"
-
-                                                    value={
-                                                        form.appointmentId===a.id
-                                                        ?form.medicines
-                                                        :""
-                                                    }
-
-                                                    onChange={e=>
-
-                                                        setForm({
-
-                                                            ...form,
-
-                                                            appointmentId:a.id,
-
-                                                            medicines:
-                                                                e.target.value
-
-                                                        })
-
-                                                    }
-
-                                                />
-
-                                            </label>
-
-
-                                            {/* INSTRUCTIONS */}
-
-                                            <label className="clinical-field">
-
-                                                Instructions & Precautions
-
-                                                <textarea
-
-                                                    placeholder="Enter dosage instructions, precautions or follow-up advice"
-
-                                                    value={
-                                                        form.appointmentId===a.id
-                                                        ?form.instructions
-                                                        :""
-                                                    }
-
-                                                    onChange={e=>
-
-                                                        setForm({
-
-                                                            ...form,
-
-                                                            appointmentId:a.id,
-
-                                                            instructions:
-                                                                e.target.value
-
-                                                        })
-
-                                                    }
-
-                                                />
-
-                                            </label>
-
-
-                                            <button
-                                                className="feature-button"
-                                                onClick={()=>
-                                                    prescribe(a.id)
-                                                }
-                                            >
-
-                                                Save Prescription
-
-                                            </button>
-
-                                        </article>
-
-                                    ))
-
-                                ) : (
-
-                                    <div className="feature-card">
-
-                                        <h2>
-                                            No Appointments Available
-                                        </h2>
-
-                                        <p>
-                                            Appointments assigned to you will appear here so that prescriptions can be created.
-                                        </p>
-
-                                    </div>
-
-                                )}
-
-                            </div>
-
-                        </>
-
-                    )}
-
-
-                    {/* =================================================
-                        STAFF SEARCH
-                    ================================================= */}
-
-                    {staff && (
-
-                        <div className="feature-card lookup-card">
+                        <div className="rx-section-heading">
 
                             <div>
 
-                                <span className="feature-kicker">
-                                    RECEPTION & PATIENT MANAGEMENT
+                                <span className="rx-label">
+                                    CLINICAL RECORD
                                 </span>
 
                                 <h2>
-                                    Patient Prescription Search
+                                    Prescription History
                                 </h2>
 
                                 <p>
-                                    Search using the patient's NIC or registered patient ID to securely review prescriptions.
+                                    Review diagnosis, medicines and treatment instructions.
                                 </p>
 
                             </div>
 
-
-                            <div className="feature-inline">
-
-                                <input
-
-                                    placeholder="Enter patient NIC / ID"
-
-                                    value={search}
-
-                                    onChange={
-                                        e=>setSearch(
-                                            e.target.value
-                                        )
-                                    }
-
-                                    onKeyDown={e=>{
-
-                                        if(e.key==="Enter"){
-                                            staffSearch();
-                                        }
-
-                                    }}
-
-                                />
-
-
-                                <button
-                                    className="feature-button"
-                                    onClick={staffSearch}
-                                >
-
-                                    Find Prescriptions
-
-                                </button>
-
+                            <div className="rx-count">
+                                <strong>{items.length}</strong>
+                                <span>Records</span>
                             </div>
 
                         </div>
 
-                    )}
 
+                        {items.length ? (
 
-                    {/* =================================================
-                        STATUS MESSAGE
-                    ================================================= */}
+                            <div className="patient-rx-grid">
 
-                    {msg && (
-
-                        <div className="feature-message">
-
-                            {msg}
-
-                        </div>
-
-                    )}
-
-
-                    {/* =================================================
-                        PATIENT / STAFF PRESCRIPTIONS
-                    ================================================= */}
-
-                    {(patient||staff) && (
-
-                        <div className="prescription-grid">
-
-                            {items.length ? (
-
-                                items.map(p=>(
+                                {items.map(p => (
 
                                     <article
-                                        className="feature-card prescription-card"
+                                        className="patient-rx-card"
                                         key={p.id}
                                     >
 
+                                        {/* CARD HEADER */}
 
-                                        {/* PRESCRIPTION HEADER */}
+                                        <div className="patient-rx-header">
 
-                                        <div className="prescription-head">
+                                            <div className="rx-id">
+                                                <span>
+                                                    PRESCRIPTION
+                                                </span>
+
+                                                <strong>
+                                                    #{p.id}
+                                                </strong>
+                                            </div>
+
+                                            <span className="rx-date">
+                                                {formatDateTime(
+                                                    p.prescribedAt
+                                                )}
+                                            </span>
+
+                                        </div>
+
+
+                                        {/* DENTIST / PATIENT */}
+
+                                        <div className="rx-person">
+
+                                            <div className="patient-avatar">
+                                                {initials(
+                                                    p.patient?.fullName
+                                                )}
+                                            </div>
 
                                             <div>
 
                                                 <span>
-                                                    PRESCRIPTION #{p.id}
+                                                    {staff
+                                                        ? "Patient"
+                                                        : "Prescribed by"}
                                                 </span>
 
-                                                <h2>
-                                                    {p.patient?.fullName ||
-                                                        "Patient"}
-                                                </h2>
+                                                <h3>
+                                                    {staff
+                                                        ? p.patient?.fullName ||
+                                                          "Patient"
+                                                        : p.dentist?.displayName ||
+                                                          "Dentist"}
+                                                </h3>
 
-                                                <small>
+                                            </div>
 
-                                                    {p.prescribedAt?.replace(
-                                                        "T",
-                                                        " "
-                                                    )}
+                                        </div>
 
-                                                </small>
+
+                                        {/* CLINICAL INFORMATION */}
+
+                                        <div className="clinical-record">
+
+                                            <div className="record-row">
+
+                                                <div className="record-icon">
+                                                    D
+                                                </div>
+
+                                                <div>
+                                                    <span>Diagnosis</span>
+
+                                                    <p>
+                                                        {p.diagnosis ||
+                                                            "Not specified"}
+                                                    </p>
+                                                </div>
 
                                             </div>
 
 
-                                            <b>
+                                            <div className="record-row">
 
-                                                {" "}
-                                                {p.dentist?.displayName ||
-                                                    "Dentist"}
+                                                <div className="record-icon">
+                                                    M
+                                                </div>
 
-                                            </b>
+                                                <div>
+                                                    <span>Medicines</span>
 
-                                        </div>
+                                                    <p>
+                                                        {p.medicines ||
+                                                            "No medicines specified"}
+                                                    </p>
+                                                </div>
 
-
-                                        {/* DIAGNOSIS */}
-
-                                        <div className="rx-row">
-
-                                            <span>
-                                                Diagnosis
-                                            </span>
-
-                                            <strong>
-                                                {p.diagnosis ||
-                                                    "Not specified"}
-                                            </strong>
-
-                                        </div>
+                                            </div>
 
 
-                                        {/* MEDICINES */}
+                                            <div className="record-row">
 
-                                        <div className="rx-row">
+                                                <div className="record-icon">
+                                                    i
+                                                </div>
 
-                                            <span>
-                                                Medicines
-                                            </span>
+                                                <div>
+                                                    <span>
+                                                        Instructions & Precautions
+                                                    </span>
 
-                                            <strong>
-                                                {p.medicines ||
-                                                    "No medicines specified"}
-                                            </strong>
+                                                    <p>
+                                                        {p.instructions ||
+                                                            "Follow dentist guidance."}
+                                                    </p>
+                                                </div>
+
+                                            </div>
 
                                         </div>
 
 
-                                        {/* INSTRUCTIONS */}
-
-                                        <div className="rx-row">
-
-                                            <span>
-                                                Instructions
-                                            </span>
-
-                                            <strong>
-                                                {p.instructions ||
-                                                    "Follow dentist guidance."}
-                                            </strong>
-
-                                        </div>
-
-
-                                        {/* =================================================
-                                            STAFF MEDICINE DISPENSING
-                                        ================================================= */}
+                                        {/* STAFF DISPENSING */}
 
                                         {staff && (
 
-                                            <div className="dispense-box">
+                                            <div className="dispensing-panel">
 
-                                                <div className="dispense-heading">
+                                                <div className="dispensing-header">
 
-                                                    <span className="feature-kicker">
-                                                        RECEPTION DESK
-                                                    </span>
+                                                    <div className="dispensing-icon">
+                                                        Rx
+                                                    </div>
 
-                                                    <h3>
-                                                        Medicine Provided
-                                                    </h3>
+                                                    <div>
+                                                        <span>
+                                                            PHARMACY / RECEPTION
+                                                        </span>
 
-                                                    <p>
-                                                        Record the medicine physically supplied to the patient according to the dentist's prescription.
-                                                    </p>
+                                                        <h3>
+                                                            Medicine Dispensing
+                                                        </h3>
+                                                    </div>
 
                                                 </div>
 
 
-                                                {(dispHistory[p.id] || []).length > 0 && (
-                                                    <div className="dispense-history" style={{marginBottom:12}}>
-                                                        <strong>Previously Provided</strong>
-                                                        {(dispHistory[p.id] || []).map(m => <div key={m.id} style={{padding:"7px 0",borderBottom:"1px solid #eee"}}><b>{m.medicineName}</b> · {m.quantity}{m.batchNumber ? ` · Batch ${m.batchNumber}` : ""} <small> · {String(m.dispensedAt || "").replace("T", " ")}</small></div>)}
+                                                <p className="dispensing-description">
+                                                    Record the medicine physically supplied to the patient.
+                                                </p>
+
+
+                                                {/* HISTORY */}
+
+                                                {(dispHistory[p.id] || [])
+                                                    .length > 0 && (
+
+                                                    <div className="dispensed-history">
+
+                                                        <div className="history-title">
+                                                            Previously Provided
+                                                        </div>
+
+                                                        {(
+                                                            dispHistory[p.id] || []
+                                                        ).map(m => (
+
+                                                            <div
+                                                                className="history-item"
+                                                                key={m.id}
+                                                            >
+
+                                                                <div>
+                                                                    <strong>
+                                                                        {m.medicineName}
+                                                                    </strong>
+
+                                                                    <span>
+                                                                        Quantity:{" "}
+                                                                        {m.quantity}
+                                                                    </span>
+                                                                </div>
+
+                                                                <div>
+                                                                    {m.batchNumber && (
+                                                                        <span>
+                                                                            Batch:{" "}
+                                                                            {m.batchNumber}
+                                                                        </span>
+                                                                    )}
+
+                                                                    <small>
+                                                                        {formatDateTime(
+                                                                            m.dispensedAt
+                                                                        )}
+                                                                    </small>
+                                                                </div>
+
+                                                            </div>
+
+                                                        ))}
+
                                                     </div>
+
                                                 )}
 
-                                                <div className="dispense-grid">
+
+                                                {/* DISPENSING FORM */}
+
+                                                <div className="dispensing-form">
 
                                                     <input
-
+                                                        type="text"
                                                         placeholder="Medicine name"
-
                                                         value={
-                                                            disp[p.id]?.medicineName ||
+                                                            disp[p.id]
+                                                                ?.medicineName ||
                                                             ""
                                                         }
-
-                                                        onChange={e=>
-
-                                                            setDisp({
-
-                                                                ...disp,
-
-                                                                [p.id]:{
-
-                                                                    ...disp[p.id],
-
-                                                                    medicineName:
-                                                                        e.target.value
-
-                                                                }
-
-                                                            })
-
+                                                        onChange={e =>
+                                                            updateDisp(
+                                                                p.id,
+                                                                "medicineName",
+                                                                e.target.value
+                                                            )
                                                         }
-
                                                     />
 
-
                                                     <input
-
+                                                        type="text"
                                                         placeholder="Quantity"
-
                                                         value={
-                                                            disp[p.id]?.quantity ||
+                                                            disp[p.id]
+                                                                ?.quantity ||
                                                             ""
                                                         }
-
-                                                        onChange={e=>
-
-                                                            setDisp({
-
-                                                                ...disp,
-
-                                                                [p.id]:{
-
-                                                                    ...disp[p.id],
-
-                                                                    quantity:
-                                                                        e.target.value
-
-                                                                }
-
-                                                            })
-
+                                                        onChange={e =>
+                                                            updateDisp(
+                                                                p.id,
+                                                                "quantity",
+                                                                e.target.value
+                                                            )
                                                         }
-
                                                     />
 
-
                                                     <input
-
+                                                        type="text"
                                                         placeholder="Batch number (optional)"
-
                                                         value={
-                                                            disp[p.id]?.batchNumber ||
+                                                            disp[p.id]
+                                                                ?.batchNumber ||
                                                             ""
                                                         }
-
-                                                        onChange={e=>
-
-                                                            setDisp({
-
-                                                                ...disp,
-
-                                                                [p.id]:{
-
-                                                                    ...disp[p.id],
-
-                                                                    batchNumber:
-                                                                        e.target.value
-
-                                                                }
-
-                                                            })
-
+                                                        onChange={e =>
+                                                            updateDisp(
+                                                                p.id,
+                                                                "batchNumber",
+                                                                e.target.value
+                                                            )
                                                         }
-
                                                     />
 
                                                 </div>
 
 
                                                 <textarea
-
+                                                    rows="2"
                                                     placeholder="Dispensing notes"
-
                                                     value={
-                                                        disp[p.id]?.notes ||
-                                                        ""
+                                                        disp[p.id]?.notes || ""
                                                     }
-
-                                                    onChange={e=>
-
-                                                        setDisp({
-
-                                                            ...disp,
-
-                                                            [p.id]:{
-
-                                                                ...disp[p.id],
-
-                                                                notes:
-                                                                    e.target.value
-
-                                                            }
-
-                                                        })
-
+                                                    onChange={e =>
+                                                        updateDisp(
+                                                            p.id,
+                                                            "notes",
+                                                            e.target.value
+                                                        )
                                                     }
-
                                                 />
 
 
                                                 <button
-                                                    className="feature-button"
-                                                    onClick={()=>
+                                                    className="rx-primary-btn dispensing-btn"
+                                                    disabled={
+                                                        dispensingId === p.id
+                                                    }
+                                                    onClick={() =>
                                                         dispense(p)
                                                     }
                                                 >
-
-                                                    ✓ Record Medicine Provided
-
+                                                    {dispensingId === p.id
+                                                        ? "Recording..."
+                                                        : "✓ Record Medicine Provided"}
                                                 </button>
 
                                             </div>
@@ -916,47 +1123,41 @@ export default function Prescriptions(){
 
                                     </article>
 
-                                ))
+                                ))}
 
-                            ) : (
+                            </div>
 
-                                <div className="feature-card no-updates-card">
+                        ) : (
 
-                                    <div className="no-updates-icon">
-                                        💊
-                                    </div>
+                            <div className="rx-empty">
 
-                                    <h2>
-                                        No Prescriptions Found
-                                    </h2>
-
-                                    <p>
-
-                                        {staff
-
-                                            ?"Search using a patient NIC / ID number to view their prescriptions."
-
-                                            :"Prescriptions issued by your dentist will appear here."
-                                        }
-
-                                    </p>
-
+                                <div className="empty-icon">
+                                    Rx
                                 </div>
 
-                            )}
+                                <h3>
+                                    No Prescriptions Found
+                                </h3>
 
-                        </div>
+                                <p>
+                                    {staff
+                                        ? "Search using a patient NIC or registered patient ID to view prescriptions."
+                                        : "Prescriptions issued by your dentist will appear here."
+                                    }
+                                </p>
 
-                    )}
+                            </div>
 
+                        )}
 
-                    
-                </div>
+                    </section>
+
+                )}
 
             </main>
 
+           
+
         </div>
-
     );
-
 }

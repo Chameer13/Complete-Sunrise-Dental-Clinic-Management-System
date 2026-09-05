@@ -777,12 +777,7 @@ function StaffDashboard({ user, appointments, dentists }) {
                         to="/help"
                     />
 
-                    <QuickAction
-                        icon="💬"
-                        title="Patient Inquiries"
-                        text="Review patient questions for front-desk support"
-                        to="/inquiries"
-                    />
+                    
 
                 </div>
 

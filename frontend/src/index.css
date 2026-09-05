@@ -377,3 +377,358 @@
         padding: 25px 5%;
     }
 }
+
+
+/* =========================================================
+   SUNRISE DENTAL - RECENT APPOINTMENTS
+   ========================================================= */
+
+.recent-appointments {
+    margin-top: 28px;
+    padding: 28px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #e5edf4;
+    box-shadow: 0 12px 35px rgba(23, 63, 99, 0.08);
+}
+
+/* Header */
+
+.recent-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.section-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #4a90b8;
+}
+
+.recent-header h2 {
+    margin: 0;
+    color: #173f63;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.recent-header p {
+    margin: 7px 0 0;
+    color: #718096;
+    font-size: 14px;
+}
+
+.view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 17px;
+    border-radius: 10px;
+    background: #edf7fc;
+    color: #26739b;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.view-all-btn:hover {
+    background: #dff1fa;
+    transform: translateY(-1px);
+}
+
+.view-all-btn span {
+    font-size: 18px;
+}
+
+/* Cards */
+
+.appointment-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.appointment-card {
+    position: relative;
+    padding: 20px;
+    border-radius: 17px;
+    border: 1px solid #e6edf3;
+    background: #ffffff;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.appointment-card:hover {
+    transform: translateY(-3px);
+    border-color: #c8e1ee;
+    box-shadow: 0 10px 25px rgba(23, 63, 99, 0.09);
+}
+
+/* Top */
+
+.appointment-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.appointment-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: #edf8fc;
+    font-size: 22px;
+}
+
+.appointment-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.appointment-number {
+    display: inline-block;
+    margin-bottom: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    color: #5b91ad;
+}
+
+.appointment-main h3 {
+    margin: 0;
+    color: #173f63;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.dentist-name {
+    margin: 6px 0 0;
+    color: #75889a;
+    font-size: 13px;
+}
+
+.dentist-name span {
+    margin-right: 5px;
+}
+
+/* Payment Status */
+
+.payment-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.payment-status.paid {
+    background: #eaf8f0;
+    color: #278454;
+}
+
+.payment-status.pending {
+    background: #fff6df;
+    color: #a56a00;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Details */
+
+.appointment-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 19px;
+    padding: 15px;
+    border-radius: 13px;
+    background: #f7fafc;
+}
+
+.appointment-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #ffffff;
+    font-size: 15px;
+}
+
+.appointment-detail small {
+    display: block;
+    margin-bottom: 3px;
+    color: #8a9aaa;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+}
+
+.appointment-detail strong {
+    display: block;
+    color: #294d68;
+    font-size: 12px;
+}
+
+/* Bottom */
+
+.appointment-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 16px;
+    padding-top: 15px;
+    border-top: 1px solid #edf1f4;
+}
+
+.appointment-message {
+    color: #718096;
+    font-size: 12px;
+}
+
+.appointment-message span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: #eaf8f0;
+    color: #278454;
+    font-weight: 900;
+}
+
+.appointment-card:not(:has(.payment-status.paid))
+.appointment-message span {
+    background: #fff2d2;
+    color: #a56a00;
+}
+
+/* Action Button */
+
+.appointment-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #247aa3;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 5px 13px rgba(36, 122, 163, 0.18);
+    transition: all 0.2s ease;
+}
+
+.appointment-action:hover {
+    background: #1c668b;
+    transform: translateY(-1px);
+}
+
+.appointment-action span {
+    font-size: 16px;
+}
+
+.appointment-action.paid-action {
+    background: #edf7fc;
+    color: #26739b;
+    box-shadow: none;
+}
+
+.appointment-action.paid-action:hover {
+    background: #dceff8;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .recent-appointments {
+        padding: 20px;
+    }
+
+    .recent-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .appointment-card-top {
+        flex-wrap: wrap;
+    }
+
+    .payment-status {
+        margin-left: 63px;
+        margin-top: -5px;
+    }
+
+    .appointment-details {
+        grid-template-columns: 1fr;
+    }
+
+    .appointment-card-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .appointment-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .recent-appointments {
+        padding: 15px;
+        border-radius: 16px;
+    }
+
+    .recent-header h2 {
+        font-size: 20px;
+    }
+
+    .appointment-card {
+        padding: 15px;
+    }
+
+    .appointment-main h3 {
+        font-size: 15px;
+    }
+}
+
+

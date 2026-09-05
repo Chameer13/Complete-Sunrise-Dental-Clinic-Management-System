@@ -1699,5 +1699,4 @@
         gap: 10px;
     }
 
-}.patient-search-form select { width:100%; border:0; outline:0; background:transparent; padding:10px 8px; font:inherit; }
-.search-card-top + .patient-search-form + .patient-search-form { margin-top: 10px; }
+}

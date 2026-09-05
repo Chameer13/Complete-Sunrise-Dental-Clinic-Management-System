@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import "./Appointment.css";
 
 const NIC_RE = /^(?:\d{12}|\d{9}[VvXx])$/;
 
@@ -126,14 +127,330 @@ export default function Appointment() {
                 </form>
                 {s && <p>{s}</p>}
 
-                {user?.role === "PATIENT" && list.length > 0 && <section className="panel" style={{marginTop: 24}}>
+                {user?.role === "PATIENT" && (
+    <section className="recent-appointments">
+
+        {/* SECTION HEADER */}
+        <div className="appointments-section-header">
+
+            <div className="appointments-title-area">
+                <div className="appointments-icon">
+                    <i className="fa-regular fa-calendar-check"></i>
+                </div>
+
+                <div>
+                    <span className="appointments-eyebrow">
+                        YOUR APPOINTMENTS
+                    </span>
+
                     <h2>My Recent Appointments</h2>
-                    <p>If you left before paying, your appointment is still available from the Payment page.</p>
-                    {list.slice(0, 5).map(a => <div key={a.id} style={{display:"flex",justifyContent:"space-between",gap:16,padding:"12px 0",borderBottom:"1px solid #eee"}}>
-                        <span><b>{a.appointmentNumber}</b> · {String(a.appointmentDateTime).replace("T", " ")}</span>
-                        <Link to={`/payment/${a.id}`}>View / Pay</Link>
-                    </div>)}
-                </section>}
+
+                    <p>
+                        Keep track of your upcoming visits and appointment history.
+                    </p>
+                </div>
+            </div>
+
+            <div className="appointment-total-box">
+                <span className="total-number">{list.length}</span>
+                <span className="total-label">TOTAL VISITS</span>
+            </div>
+
+        </div>
+
+
+        {/* EMPTY STATE */}
+        {list.length === 0 ? (
+
+            <div className="appointment-empty">
+
+                <div className="empty-calendar">
+                    <i className="fa-regular fa-calendar-days"></i>
+                </div>
+
+                <h3>No appointments yet</h3>
+
+                <p>
+                    You don't have any appointments at the moment.
+                    Book your first visit and it will appear here.
+                </p>
+
+                <button
+                    type="button"
+                    className="empty-book-btn"
+                    onClick={() =>
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        })
+                    }
+                >
+                    <i className="fa-solid fa-calendar-plus"></i>
+                    Book an Appointment
+                </button>
+
+            </div>
+
+        ) : (
+
+            <div className="appointment-list">
+
+                {list.slice(0, 5).map(a => {
+
+                    const appointmentDate =
+                        new Date(a.appointmentDateTime);
+
+                    const isUpcoming =
+                        appointmentDate >= new Date();
+
+                    const isPaid =
+                        a.paid === true ||
+                        a.paymentStatus === "PAID" ||
+                        a.status === "PAID";
+
+                    const appointmentNumber =
+                        a.appointmentNumber ||
+                        `APT-${a.id}`;
+
+                    const dentist =
+                        a.dentistName ||
+                        a.dentist?.fullName ||
+                        a.dentist?.name ||
+                        "Assigned Dentist";
+
+                    const treatment =
+                        a.treatmentName ||
+                        a.treatment?.name ||
+                        "Dental Consultation";
+
+                    return (
+
+                        <article
+                            className={`modern-appointment-card ${
+                                isUpcoming
+                                    ? "appointment-upcoming"
+                                    : "appointment-completed"
+                            }`}
+                            key={a.id}
+                        >
+
+                            {/* DATE */}
+                            <div className="appointment-date-block">
+
+                                <span className="date-month">
+                                    {appointmentDate.toLocaleDateString(
+                                        "en-US",
+                                        { month: "short" }
+                                    )}
+                                </span>
+
+                                <strong className="date-day">
+                                    {appointmentDate.toLocaleDateString(
+                                        "en-US",
+                                        { day: "2-digit" }
+                                    )}
+                                </strong>
+
+                                <span className="date-weekday">
+                                    {appointmentDate.toLocaleDateString(
+                                        "en-US",
+                                        { weekday: "short" }
+                                    )}
+                                </span>
+
+                            </div>
+
+
+                            {/* APPOINTMENT BODY */}
+                            <div className="modern-appointment-body">
+
+                                {/* TOP */}
+                                <div className="modern-appointment-top">
+
+                                    <div className="appointment-main-info">
+
+                                        <div className="appointment-number">
+                                            <i className="fa-regular fa-calendar-check"></i>
+                                            {appointmentNumber}
+                                        </div>
+
+                                        <h3>{treatment}</h3>
+
+                                        <div className="dentist-line">
+                                            <span className="dentist-avatar">
+                                                <i className="fa-solid fa-user-doctor"></i>
+                                            </span>
+
+                                            <span>
+                                                <small>YOUR DENTIST</small>
+                                                <strong>{dentist}</strong>
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* STATUS */}
+                                    <div
+                                        className={`appointment-status ${
+                                            isUpcoming
+                                                ? "status-upcoming"
+                                                : "status-completed"
+                                        }`}
+                                    >
+                                        <span className="status-dot"></span>
+
+                                        {isUpcoming
+                                            ? "Upcoming"
+                                            : "Completed"}
+                                    </div>
+
+                                </div>
+
+
+                                {/* DETAILS */}
+                                <div className="modern-appointment-details">
+
+                                    <div className="modern-detail">
+
+                                        <div className="detail-icon">
+                                            <i className="fa-regular fa-clock"></i>
+                                        </div>
+
+                                        <div>
+                                            <span>TIME</span>
+                                            <strong>
+                                                {appointmentDate.toLocaleTimeString(
+                                                    "en-US",
+                                                    {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit"
+                                                    }
+                                                )}
+                                            </strong>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div className="modern-detail">
+
+                                        <div className="detail-icon">
+                                            <i className="fa-solid fa-tooth"></i>
+                                        </div>
+
+                                        <div>
+                                            <span>TREATMENT</span>
+                                            <strong>{treatment}</strong>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div className="modern-detail">
+
+                                        <div className="detail-icon">
+                                            <i className="fa-regular fa-credit-card"></i>
+                                        </div>
+
+                                        <div>
+                                            <span>PAYMENT</span>
+
+                                            <strong
+                                                className={
+                                                    isPaid
+                                                        ? "payment-paid"
+                                                        : "payment-pending"
+                                                }
+                                            >
+                                                {isPaid
+                                                    ? "Paid"
+                                                    : "Pending"}
+                                            </strong>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* BOTTOM */}
+                                <div className="modern-appointment-footer">
+
+                                    <div className="payment-message">
+
+                                        <div
+                                            className={`payment-status-icon ${
+                                                isPaid
+                                                    ? "payment-success"
+                                                    : "payment-warning"
+                                            }`}
+                                        >
+                                            <i
+                                                className={
+                                                    isPaid
+                                                        ? "fa-solid fa-check"
+                                                        : "fa-solid fa-clock"
+                                                }
+                                            ></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                {isPaid
+                                                    ? "Payment completed"
+                                                    : "Payment required"}
+                                            </strong>
+
+                                            <span>
+                                                {isPaid
+                                                    ? "Your appointment is fully paid."
+                                                    : "Complete your payment to confirm your visit."}
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+
+                                    <Link
+                                        to={`/payment/${a.id}`}
+                                        className={
+                                            isPaid
+                                                ? "modern-view-button"
+                                                : "modern-pay-button"
+                                        }
+                                    >
+
+                                        <i
+                                            className={
+                                                isPaid
+                                                    ? "fa-regular fa-eye"
+                                                    : "fa-solid fa-arrow-right"
+                                            }
+                                        ></i>
+
+                                        {isPaid
+                                            ? "View Payment"
+                                            : "Continue Payment"}
+
+                                    </Link>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    );
+
+                })}
+
+            </div>
+
+        )}
+
+    </section>
+)}
             </div>
         </main>
     </div>;

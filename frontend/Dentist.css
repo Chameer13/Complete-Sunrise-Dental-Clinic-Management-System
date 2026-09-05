@@ -1,11 +1,15 @@
 /* ============================================================
-   SUNRISE DENTAL
-   DENTIST PORTAL
-   ============================================================ */
+   SUNRISE DENTAL - DENTIST PORTAL
+   Prescription History Interface
+============================================================ */
+
+* {
+    box-sizing: border-box;
+}
 
 .dentist-page {
     min-height: 100vh;
-    background: #f3f7fa;
+    background: #f4f8fa;
     color: #193c56;
     font-family: "Segoe UI", Arial, sans-serif;
 }
@@ -13,19 +17,21 @@
 
 /* ============================================================
    HEADER
-   ============================================================ */
+============================================================ */
 
 .dentist-header {
-    height: 74px;
-    padding: 0 38px;
-    background: #0c3150;
-    color: white;
+    min-height: 76px;
+    padding: 0 32px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    box-shadow: 0 3px 18px rgba(7, 38, 62, .18);
+    background: #0c3150;
+
+    color: white;
+
+    box-shadow: 0 3px 15px rgba(0, 0, 0, .12);
 }
 
 .dentist-brand {
@@ -37,28 +43,34 @@
 .dentist-logo {
     width: 43px;
     height: 43px;
-    border-radius: 11px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: rgba(255,255,255,.12);
-    font-size: 22px;
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, .12);
+
+    font-size: 21px;
 }
 
 .dentist-brand h2 {
     margin: 0;
+
     color: white;
+
     font-size: 15px;
-    letter-spacing: .5px;
+    letter-spacing: 1px;
 }
 
 .dentist-brand span {
     display: block;
+
     margin-top: 3px;
 
-    color: rgba(255,255,255,.55);
+    color: rgba(255,255,255,.58);
+
     font-size: 9px;
 }
 
@@ -71,120 +83,126 @@
 .doctor-online {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
 
-    color: rgba(255,255,255,.65);
-    font-size: 9px;
+    color: #b9e9d0;
+
+    font-size: 10px;
 }
 
 .doctor-online span {
     width: 7px;
     height: 7px;
+
     border-radius: 50%;
-    background: #48c88b;
+
+    background: #38c989;
+
+    box-shadow: 0 0 0 4px rgba(56,201,137,.12);
 }
 
 .doctor-name {
-    padding-left: 20px;
-    border-left: 1px solid rgba(255,255,255,.15);
+    text-align: right;
 }
 
 .doctor-name strong {
     display: block;
+
     color: white;
-    font-size: 9px;
+
+    font-size: 11px;
 }
 
 .doctor-name small {
-    display: block;
-    margin-top: 3px;
-    color: rgba(255,255,255,.45);
-    font-size: 7px;
+    color: rgba(255,255,255,.55);
+
+    font-size: 8px;
 }
 
 .dentist-dashboard-link {
-    padding: 9px 14px;
+    padding: 9px 13px;
 
-    border: 1px solid rgba(255,255,255,.2);
-    border-radius: 7px;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 8px;
 
     color: white;
     text-decoration: none;
 
     font-size: 9px;
-    font-weight: 700;
 
-    background: rgba(255,255,255,.06);
+    transition: .2s;
 }
 
 .dentist-dashboard-link:hover {
-    background: rgba(255,255,255,.13);
+    background: rgba(255,255,255,.1);
 }
 
 
 /* ============================================================
    MAIN
-   ============================================================ */
+============================================================ */
 
 .dentist-main {
-    max-width: 1420px;
+    width: min(1400px, calc(100% - 48px));
+
     margin: auto;
-    padding: 30px 38px 50px;
+    padding: 25px 0 50px;
 }
 
 
 /* ============================================================
    HERO
-   ============================================================ */
+============================================================ */
 
 .dentist-hero {
-    min-height: 235px;
-    margin-bottom: 20px;
+    min-height: 225px;
 
-    padding: 32px 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    border-radius: 14px;
+    overflow: hidden;
+
+    padding: 32px 42px;
+
+    border-radius: 17px;
 
     background:
         linear-gradient(
             120deg,
             #0b3453,
-            #164d6d
+            #175a78
         );
 
     color: white;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    overflow: hidden;
-
-    position: relative;
-
     box-shadow:
-        0 10px 28px rgba(12,49,80,.16);
+        0 12px 30px rgba(12,49,80,.16);
 }
 
 .hero-content {
-    position: relative;
-    z-index: 2;
+    max-width: 720px;
 }
 
 .hero-label {
-    color: rgba(255,255,255,.48);
-    font-size: 8px;
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    color: #9edee2;
+
+    font-size: 9px;
     font-weight: 800;
-    letter-spacing: 1.7px;
+
+    letter-spacing: 1.5px;
 }
 
 .hero-content h1 {
-    margin: 8px 0 8px;
+    margin: 0 0 9px;
 
     color: white;
 
-    font-size: 27px;
-    font-weight: 750;
+    font-size: 28px;
 }
 
 .hero-content p {
@@ -192,379 +210,362 @@
 
     margin: 0;
 
-    color: rgba(255,255,255,.67);
+    color: rgba(255,255,255,.72);
 
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.7;
 }
 
 .hero-details {
     display: flex;
-    gap: 30px;
+    gap: 35px;
 
-    margin-top: 24px;
-}
-
-.hero-details > div {
-    padding-left: 15px;
-    border-left: 2px solid rgba(255,255,255,.17);
+    margin-top: 22px;
 }
 
 .hero-details span {
     display: block;
 
-    color: rgba(255,255,255,.4);
+    margin-bottom: 4px;
+
+    color: rgba(255,255,255,.45);
 
     font-size: 7px;
     font-weight: 800;
-    letter-spacing: .9px;
+
+    letter-spacing: 1px;
 }
 
 .hero-details strong {
-    display: block;
-
-    margin-top: 4px;
-
     color: white;
 
     font-size: 9px;
 }
 
 .hero-visual {
-    width: 250px;
-    height: 200px;
-
     position: relative;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 220px;
+    height: 160px;
 }
 
 .hero-circle {
-    width: 145px;
-    height: 145px;
+    width: 125px;
+    height: 125px;
 
-    border-radius: 50%;
+    position: absolute;
+    right: 35px;
+    top: 10px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: rgba(255,255,255,.08);
+    border-radius: 50%;
 
-    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.09);
 
-    font-size: 65px;
+    border: 1px solid rgba(255,255,255,.13);
+
+    font-size: 57px;
 }
 
 .floating-card {
     position: absolute;
 
     right: 0;
-    bottom: 5px;
+    bottom: 0;
 
-    padding: 12px 16px;
+    min-width: 120px;
 
-    min-width: 115px;
+    padding: 12px;
 
-    border-radius: 9px;
+    border-radius: 10px;
 
     background: white;
 
-    color: #193f58;
+    color: #173b52;
 
-    box-shadow:
-        0 8px 25px rgba(0,0,0,.15);
+    box-shadow: 0 12px 30px rgba(0,0,0,.18);
 }
 
 .floating-card span {
     display: block;
 
-    color: #8496a1;
+    margin-bottom: 4px;
 
-    font-size: 6px;
+    color: #83939c;
+
+    font-size: 7px;
     font-weight: 800;
-    letter-spacing: .7px;
 }
 
 .floating-card strong {
-    display: block;
-
-    margin-top: 4px;
-
-    font-size: 21px;
+    font-size: 25px;
 }
 
 
 /* ============================================================
    ALERT
-   ============================================================ */
+============================================================ */
 
 .dentist-alert {
-    min-height: 42px;
-
-    margin-bottom: 17px;
-    padding: 10px 14px;
+    margin-top: 18px;
+    padding: 12px 15px;
 
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
 
-    background: #eaf7f0;
+    border: 1px solid #cce7d9;
+    border-radius: 9px;
 
-    border: 1px solid #d3ebdf;
-    border-radius: 8px;
+    background: #effaf4;
 
-    color: #3c765e;
+    color: #246548;
 
-    font-size: 9px;
+    font-size: 10px;
 }
 
-.dentist-alert span {
-    width: 21px;
-    height: 21px;
-
-    border-radius: 50%;
+.dentist-alert > span {
+    width: 23px;
+    height: 23px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: #d8efe3;
+    border-radius: 50%;
 
-    font-weight: 800;
+    background: #d7f3e4;
+
+    font-weight: bold;
+}
+
+.dentist-alert div {
+    flex: 1;
 }
 
 .dentist-alert button {
-    margin-left: auto;
+    border: 0;
+    background: transparent;
 
-    border: none;
-    background: none;
+    color: #527766;
 
-    color: #719384;
+    font-size: 18px;
 
-    font-size: 17px;
     cursor: pointer;
 }
 
 
 /* ============================================================
    STATISTICS
-   ============================================================ */
+============================================================ */
 
 .dentist-stats {
     display: grid;
+
     grid-template-columns: repeat(4, 1fr);
 
-    gap: 13px;
+    gap: 15px;
 
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 
 .dentist-stat {
-    min-height: 94px;
-
-    padding: 16px;
+    min-height: 100px;
 
     display: flex;
     align-items: center;
-    gap: 12px;
+
+    gap: 13px;
+
+    padding: 18px;
 
     background: white;
 
-    border: 1px solid #e0e8ed;
-    border-radius: 10px;
+    border: 1px solid #e1e9ed;
 
-    transition: .2s;
-}
+    border-radius: 12px;
 
-.dentist-stat:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 22px rgba(20,55,76,.07);
+    box-shadow: 0 3px 12px rgba(25,55,75,.035);
 }
 
 .stat-icon {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
 
     flex-shrink: 0;
-
-    border-radius: 9px;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-radius: 10px;
 
     font-size: 15px;
     font-weight: 700;
 }
 
 .stat-icon.blue {
-    background: #e8f2f8;
-    color: #347da5;
+    background: #e8f2fa;
+    color: #2675a8;
 }
 
 .stat-icon.green {
-    background: #e8f5ef;
-    color: #398968;
+    background: #e7f6ee;
+    color: #25885d;
 }
 
 .stat-icon.orange {
-    background: #fff3e4;
-    color: #ae7730;
+    background: #fff2df;
+    color: #c87b17;
 }
 
 .stat-icon.purple {
-    background: #f1ecf8;
-    color: #775c99;
+    background: #f0eafa;
+    color: #7751a5;
 }
 
 .dentist-stat span {
     display: block;
 
-    color: #8797a1;
+    color: #91a0a8;
 
     font-size: 7px;
     font-weight: 800;
+
     letter-spacing: .7px;
 }
 
 .dentist-stat strong {
     display: block;
 
-    margin-top: 4px;
+    margin: 3px 0;
 
-    color: #25485e;
+    color: #244b61;
 
-    font-size: 18px;
+    font-size: 21px;
 }
 
 .dentist-stat small {
-    display: block;
+    color: #a1adb3;
 
-    margin-top: 2px;
-
-    color: #9aa7ae;
-
-    font-size: 7px;
+    font-size: 8px;
 }
 
 
 /* ============================================================
    APPOINTMENTS PANEL
-   ============================================================ */
+============================================================ */
 
 .appointments-panel {
-    padding: 23px;
+    overflow: hidden;
 
     background: white;
 
-    border: 1px solid #dfe7ec;
-    border-radius: 11px;
+    border: 1px solid #e0e8ec;
 
-    box-shadow:
-        0 5px 18px rgba(20,55,76,.035);
+    border-radius: 14px;
+
+    box-shadow: 0 4px 16px rgba(25,55,75,.04);
 }
 
 .appointments-heading {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+    padding: 22px 24px;
 
-    padding-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     border-bottom: 1px solid #edf1f3;
 }
 
-.appointments-heading > div:first-child span {
-    color: #3481a8;
+.appointments-heading > div > span {
+    color: #148390;
 
     font-size: 7px;
     font-weight: 800;
-    letter-spacing: 1.2px;
+
+    letter-spacing: 1px;
 }
 
 .appointments-heading h2 {
-    margin: 5px 0 4px;
+    margin: 4px 0;
 
-    color: #23475d;
+    color: #244b61;
 
-    font-size: 17px;
+    font-size: 19px;
 }
 
 .appointments-heading p {
     margin: 0;
 
-    color: #8a99a2;
+    color: #93a0a7;
 
     font-size: 9px;
 }
 
 .refresh-btn {
-    padding: 8px 13px;
+    padding: 9px 14px;
 
-    border: 1px solid #d7e2e8;
-    border-radius: 6px;
+    border: 1px solid #d8e3e8;
+    border-radius: 7px;
 
-    background: #f8fafb;
+    background: white;
 
-    color: #4b697a;
+    color: #31596e;
 
-    font-size: 8px;
-    font-weight: 700;
+    font-size: 9px;
 
     cursor: pointer;
+
+    transition: .2s;
 }
 
 .refresh-btn:hover {
-    background: #edf4f7;
+    background: #f2f8fa;
+}
+
+.refresh-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 
 /* ============================================================
-   APPOINTMENT LIST
-   ============================================================ */
+   APPOINTMENT TABLE
+============================================================ */
 
 .appointment-list {
     width: 100%;
-
-    margin-top: 17px;
-
     overflow-x: auto;
 }
 
 .appointment-header,
 .appointment-row {
-    min-width: 930px;
+    min-width: 900px;
 
     display: grid;
 
     grid-template-columns:
         1.25fr
         1.45fr
-        1.35fr
-        .9fr
-        1.15fr;
+        1.3fr
+        .8fr
+        1.3fr;
 
     align-items: center;
 }
 
 .appointment-header {
-    min-height: 37px;
+    padding: 11px 22px;
 
-    padding: 0 15px;
+    background: #f8fafb;
 
-    border: 1px solid #e0e8ec;
-    border-radius: 7px 7px 0 0;
+    border-bottom: 1px solid #e7edef;
 
-    background: #f5f8fa;
-}
-
-.appointment-header span {
-    color: #83939d;
+    color: #8999a2;
 
     font-size: 7px;
     font-weight: 800;
@@ -573,122 +574,98 @@
 }
 
 .appointment-row {
-    min-height: 78px;
+    padding: 15px 22px;
 
-    padding: 11px 15px;
+    border-bottom: 1px solid #edf1f3;
 
-    border-left: 1px solid #e0e8ec;
-    border-right: 1px solid #e0e8ec;
-    border-bottom: 1px solid #e0e8ec;
+    transition: .2s;
+}
 
-    transition: .18s;
+.appointment-row:last-child {
+    border-bottom: 0;
 }
 
 .appointment-row:hover {
-    background: #fbfcfd;
+    background: #fbfdfe;
 }
 
-.appointment-row strong {
-    display: block;
-
-    color: #315267;
-
-    font-size: 9px;
-}
-
-.appointment-row small {
-    display: block;
-
-    margin-top: 4px;
-
-    color: #96a4ab;
-
-    font-size: 7px;
-}
-
-
-/* ============================================================
-   APPOINTMENT TIME
-   ============================================================ */
-
-.appointment-time {
+.appointment-time,
+.patient-info {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
 }
 
 .appointment-icon {
-    width: 32px;
-    height: 32px;
-
-    border-radius: 7px;
-
-    background: #edf4f7;
-
-    color: #397a9e;
+    width: 34px;
+    height: 34px;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-radius: 9px;
+
+    background: #edf6f8;
+
+    color: #087f8c;
 
     font-size: 14px;
 }
 
+.appointment-time strong,
+.patient-info strong,
+.treatment-info strong {
+    display: block;
 
-/* ============================================================
-   PATIENT
-   ============================================================ */
+    color: #34576b;
 
-.patient-info {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+    font-size: 9px;
+}
+
+.appointment-time small,
+.patient-info small,
+.treatment-info small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #9aa8ae;
+
+    font-size: 7px;
 }
 
 .patient-avatar {
-    width: 33px;
-    height: 33px;
-
-    border-radius: 50%;
-
-    background: #e7f1f5;
-
-    color: #397694;
+    width: 34px;
+    height: 34px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 10px;
-    font-weight: 750;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #e7f1f6;
+
+    color: #39708c;
+
+    font-size: 11px;
+    font-weight: 700;
 }
-
-
-/* ============================================================
-   TREATMENT
-   ============================================================ */
-
-.treatment-info strong {
-    color: #35576a;
-}
-
-
-/* ============================================================
-   STATUS
-   ============================================================ */
 
 .dentist-status {
     display: inline-flex;
-
     align-items: center;
     gap: 5px;
 
-    padding: 6px 9px;
+    padding: 5px 8px;
 
-    border-radius: 5px;
+    border-radius: 20px;
 
     font-size: 7px;
-    font-weight: 750;
+    font-weight: 800;
 }
 
 .dentist-status i {
@@ -698,56 +675,54 @@
     border-radius: 50%;
 }
 
-.dentist-status.confirmed {
-    background: #e8f6ef;
-    color: #39775e;
-}
-
-.dentist-status.confirmed i {
-    background: #45a675;
-}
-
 .dentist-status.booked {
-    background: #fff3e4;
-    color: #9c6d31;
+    background: #fff3df;
+    color: #b87616;
 }
 
 .dentist-status.booked i {
-    background: #d99a40;
+    background: #d99122;
+}
+
+.dentist-status.confirmed {
+    background: #e5f6ed;
+    color: #218055;
+}
+
+.dentist-status.confirmed i {
+    background: #2aa46e;
 }
 
 .dentist-status.completed {
-    background: #e8f2f8;
-    color: #347495;
+    background: #e7f0f8;
+    color: #356d91;
 }
 
 .dentist-status.completed i {
-    background: #438bad;
+    background: #4385ad;
 }
 
 .dentist-status.cancelled {
-    background: #fff0f0;
-    color: #a65a5a;
+    background: #fbe8e8;
+    color: #b64e4e;
 }
 
 .dentist-status.cancelled i {
-    background: #c66d6d;
+    background: #c85b5b;
 }
 
-
-/* ============================================================
-   UPDATE BUTTON
-   ============================================================ */
-
 .update-patient-btn {
-    min-width: 125px;
+    display: block;
 
-    padding: 8px 10px;
+    width: 100%;
 
-    border: none;
-    border-radius: 6px;
+    margin-bottom: 6px;
+    padding: 8px 9px;
 
-    background: #103d5b;
+    border: 0;
+    border-radius: 7px;
+
+    background: #0c5c78;
 
     color: white;
 
@@ -759,212 +734,811 @@
     transition: .2s;
 }
 
-.update-patient-btn:hover:not(:disabled) {
-    background: #176a94;
+.update-patient-btn:hover {
+    background: #084a62;
 
     transform: translateY(-1px);
 }
 
 .update-patient-btn:disabled {
     opacity: .55;
+    cursor: not-allowed;
+}
 
-    cursor: wait;
+.update-patient-btn.history-btn {
+    background: #e8f3f5;
+
+    color: #08727e;
+}
+
+.update-patient-btn.history-btn:hover {
+    background: #d9edef;
 }
 
 
 /* ============================================================
    LOADING
-   ============================================================ */
+============================================================ */
 
 .dentist-loading {
-    min-height: 260px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    padding: 65px 20px;
 
     text-align: center;
 }
 
-.loading-spinner {
-    width: 35px;
-    height: 35px;
+.loading-spinner,
+.history-spinner {
+    width: 32px;
+    height: 32px;
 
-    margin-bottom: 13px;
+    margin: auto;
 
-    border: 3px solid #e3ebef;
-    border-top-color: #2d769b;
+    border: 3px solid #dce8eb;
+    border-top-color: #087f8c;
 
     border-radius: 50%;
 
-    animation: dentist-spin .8s linear infinite;
+    animation: spin .8s linear infinite;
 }
 
-@keyframes dentist-spin {
+@keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
 
 .dentist-loading h3 {
-    margin: 0;
+    margin: 15px 0 5px;
 
-    color: #526f80;
+    color: #31566b;
 
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .dentist-loading p {
-    margin: 5px 0;
+    margin: 0;
 
-    color: #9aa7ae;
+    color: #98a6ad;
 
-    font-size: 8px;
+    font-size: 9px;
 }
 
 
 /* ============================================================
-   EMPTY
-   ============================================================ */
+   EMPTY APPOINTMENTS
+============================================================ */
 
 .dentist-empty {
-    min-height: 270px;
-
-    display: flex;
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
+    padding: 65px 20px;
 
     text-align: center;
 }
 
 .empty-tooth {
-    width: 58px;
-    height: 58px;
+    font-size: 45px;
 
-    margin-bottom: 13px;
-
-    border-radius: 50%;
-
-    background: #edf4f7;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 25px;
+    opacity: .5;
 }
 
 .dentist-empty h2 {
-    margin: 0;
+    margin: 12px 0 6px;
 
-    color: #4c6979;
+    color: #31566b;
 
-    font-size: 14px;
+    font-size: 17px;
 }
 
 .dentist-empty p {
-    max-width: 430px;
-
-    margin: 6px 0 15px;
-
-    color: #98a5ac;
+    color: #95a2a9;
 
     font-size: 9px;
 }
 
 .dentist-empty button {
-    padding: 8px 14px;
+    margin-top: 8px;
 
-    border: 1px solid #d3dfe5;
-    border-radius: 6px;
+    padding: 9px 15px;
 
-    background: white;
+    border: 0;
+    border-radius: 7px;
 
-    color: #416477;
+    background: #0c5c78;
 
-    font-size: 8px;
-    font-weight: 700;
+    color: white;
+
+    font-size: 9px;
 
     cursor: pointer;
 }
 
 
 /* ============================================================
-   INFORMATION CARDS
-   ============================================================ */
+   PRESCRIPTION HISTORY MODAL
+============================================================ */
 
-.clinical-info-grid {
-    display: grid;
+.history-modal-backdrop {
+    position: fixed;
 
-    grid-template-columns: 1fr 1fr;
+    inset: 0;
 
-    gap: 14px;
+    z-index: 1000;
 
-    margin-top: 17px;
-}
-
-.clinical-info-card {
-    min-height: 125px;
-
-    padding: 20px;
-
-    background: white;
-
-    border: 1px solid #dfe7ec;
-    border-radius: 10px;
+    padding: 25px;
 
     display: flex;
 
-    align-items: flex-start;
-
-    gap: 13px;
-}
-
-.clinical-card-icon {
-    width: 40px;
-    height: 40px;
-
-    flex-shrink: 0;
-
-    border-radius: 9px;
-
-    background: #edf4f7;
-
-    display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 17px;
+    background: rgba(7, 28, 43, .72);
+
+    backdrop-filter: blur(5px);
+
+    animation: historyFadeIn .2s ease;
 }
 
-.clinical-info-card span {
-    color: #3481a8;
+@keyframes historyFadeIn {
 
-    font-size: 7px;
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.history-modal {
+    width: min(850px, 100%);
+
+    max-height: 90vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: white;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, .3);
+
+    animation: historyModalIn .25s ease;
+}
+
+@keyframes historyModalIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+/* ============================================================
+   HISTORY HEADER
+============================================================ */
+
+.history-modal-header {
+    min-height: 105px;
+
+    padding: 22px 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background:
+        linear-gradient(
+            120deg,
+            #0c3150,
+            #155a78
+        );
+
+    color: white;
+}
+
+.history-patient-profile {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.history-patient-avatar {
+    width: 55px;
+    height: 55px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.13);
+
+    border: 1px solid rgba(255,255,255,.22);
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 700;
+}
+
+.history-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: rgba(255,255,255,.58);
+
+    font-size: 8px;
+
     font-weight: 800;
 
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
 }
 
-.clinical-info-card h3 {
-    margin: 5px 0;
+.history-patient-profile h2 {
+    margin: 0;
 
-    color: #36566a;
+    color: white;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+.history-patient-meta {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 5px;
+
+    color: rgba(255,255,255,.63);
+
+    font-size: 9px;
+}
+
+.history-dot {
+    opacity: .45;
+}
+
+
+/* ============================================================
+   CLOSE BUTTON
+============================================================ */
+
+.history-close-btn {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,.2);
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,.08);
+
+    color: white;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.history-close-btn:hover {
+    background: rgba(255,255,255,.18);
+
+    transform: rotate(90deg);
+}
+
+
+/* ============================================================
+   HISTORY BODY
+============================================================ */
+
+.history-modal-body {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 23px 25px;
+
+    background: #f5f9fb;
+}
+
+.history-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-modal-body::-webkit-scrollbar-track {
+    background: #edf2f4;
+}
+
+.history-modal-body::-webkit-scrollbar-thumb {
+    background: #b9cbd2;
+
+    border-radius: 10px;
+}
+
+
+/* ============================================================
+   SUMMARY
+============================================================ */
+
+.history-summary {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+    padding: 13px 15px;
+
+    background: white;
+
+    border: 1px solid #dfe8ed;
+
+    border-radius: 10px;
+}
+
+.history-summary-icon {
+    width: 39px;
+    height: 39px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #e6f4f5;
+
+    color: #087f8c;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+.history-summary strong {
+    display: block;
+
+    color: #294c60;
 
     font-size: 12px;
 }
 
-.clinical-info-card p {
-    max-width: 550px;
+.history-summary span {
+    display: block;
 
-    margin: 0;
+    margin-top: 3px;
 
     color: #8d9ba3;
 
+    font-size: 9px;
+}
+
+
+/* ============================================================
+   TIMELINE
+============================================================ */
+
+.history-timeline {
+    position: relative;
+}
+
+.history-prescription {
+    display: grid;
+
+    grid-template-columns: 38px 1fr;
+
+    gap: 13px;
+
+    margin-bottom: 18px;
+}
+
+.history-timeline-side {
+    position: relative;
+
+    display: flex;
+
+    justify-content: center;
+}
+
+.history-number {
+    width: 29px;
+    height: 29px;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #087f8c;
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 0 0 5px #e3f1f3;
+}
+
+.history-line {
+    position: absolute;
+
+    top: 34px;
+    bottom: -18px;
+
+    width: 1px;
+
+    background: #cbdde1;
+}
+
+
+/* ============================================================
+   PRESCRIPTION CARD
+============================================================ */
+
+.history-record {
+    padding: 19px;
+
+    background: white;
+
+    border: 1px solid #dfe7ec;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 14px rgba(25,55,75,.04);
+
+    transition: .2s;
+}
+
+.history-record:hover {
+    border-color: #c7dce2;
+
+    box-shadow:
+        0 8px 22px rgba(25,55,75,.07);
+}
+
+
+/* ============================================================
+   RECORD HEADER
+============================================================ */
+
+.history-record-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    padding-bottom: 14px;
+
+    margin-bottom: 5px;
+
+    border-bottom: 1px solid #edf1f3;
+}
+
+.history-record-header span,
+.history-date span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #91a0a8;
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .8px;
+}
+
+.history-record-header h3 {
+    margin: 0;
+
+    color: #294f64;
+
+    font-size: 14px;
+}
+
+.history-date {
+    text-align: right;
+}
+
+.history-date strong {
+    color: #5b7482;
+
     font-size: 8px;
+
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   CLINICAL INFORMATION
+============================================================ */
+
+.history-clinical-row {
+    display: flex;
+
+    gap: 11px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid #f0f3f4;
+}
+
+.history-info-icon {
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+.history-info-icon.diagnosis {
+    background: #eaf2fb;
+
+    color: #3975a6;
+}
+
+.history-info-icon.medicine {
+    background: #e9f7ef;
+
+    color: #2a8a60;
+}
+
+.history-info-icon.instruction {
+    background: #fff2df;
+
+    color: #bd781b;
+}
+
+.history-clinical-row span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #8999a1;
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .7px;
+
+    text-transform: uppercase;
+}
+
+.history-clinical-row p {
+    margin: 0;
+
+    color: #405e6d;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   DENTIST INFORMATION
+============================================================ */
+
+.history-dentist {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 14px;
+
+    padding-top: 12px;
+
+    border-top: 1px solid #edf1f3;
+}
+
+.history-dentist-avatar {
+    width: 31px;
+    height: 31px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eaf2f5;
+
+    color: #38677b;
+
+    font-size: 8px;
+
+    font-weight: 800;
+}
+
+.history-dentist span {
+    display: block;
+
+    color: #96a4aa;
+
+    font-size: 6px;
+
+    font-weight: 800;
+
+    letter-spacing: .8px;
+}
+
+.history-dentist strong {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #3a5d6d;
+
+    font-size: 9px;
+}
+
+
+/* ============================================================
+   LOADING
+============================================================ */
+
+.history-loading {
+    min-height: 360px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+.history-spinner {
+    margin-bottom: 18px;
+}
+
+.history-loading h3 {
+    margin: 0 0 5px;
+
+    color: #31566b;
+
+    font-size: 14px;
+}
+
+.history-loading p {
+    margin: 0;
+
+    color: #94a2a9;
+
+    font-size: 9px;
+}
+
+
+/* ============================================================
+   EMPTY HISTORY
+============================================================ */
+
+.history-empty {
+    min-height: 360px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+.history-empty-icon {
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e8f3f5;
+
+    color: #087f8c;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 0 0 8px #f0f7f8;
+}
+
+.history-empty h3 {
+    margin: 18px 0 6px;
+
+    color: #31566b;
+
+    font-size: 15px;
+}
+
+.history-empty p {
+    max-width: 350px;
+
+    margin: 0;
+
+    color: #96a4ab;
+
+    font-size: 9px;
 
     line-height: 1.6;
 }
@@ -972,91 +1546,84 @@
 
 /* ============================================================
    FOOTER
-   ============================================================ */
+============================================================ */
 
-.dentist-footer {
-    margin-top: 30px;
-    padding-top: 20px;
+.history-modal-footer {
+    min-height: 55px;
 
-    border-top: 1px solid #dfe6ea;
+    padding: 11px 20px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
+
+    background: white;
+
+    border-top: 1px solid #e5ecef;
 }
 
-.dentist-footer strong {
-    display: block;
+.history-modal-footer span {
+    color: #91a0a7;
 
-    color: #173b56;
-
-    font-size: 10px;
+    font-size: 8px;
 }
 
-.dentist-footer span {
-    display: block;
+.history-modal-footer button {
+    padding: 8px 17px;
 
-    margin-top: 4px;
+    border: 0;
 
-    color: #8d9ba3;
+    border-radius: 7px;
 
-    font-size: 7px;
+    background: #0c5c78;
+
+    color: white;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s;
 }
 
-.dentist-footer p {
-    margin: 0;
-
-    color: #9aa7ae;
-
-    font-size: 7px;
-}
-
-
-/* ============================================================
-   SCROLLBAR
-   ============================================================ */
-
-.appointment-list::-webkit-scrollbar {
-    height: 6px;
-}
-
-.appointment-list::-webkit-scrollbar-track {
-    background: #eef2f4;
-}
-
-.appointment-list::-webkit-scrollbar-thumb {
-    background: #bdcbd2;
-    border-radius: 10px;
+.history-modal-footer button:hover {
+    background: #084b63;
 }
 
 
 /* ============================================================
-   RESPONSIVE
-   ============================================================ */
+   RESPONSIVE - TABLET
+============================================================ */
 
 @media (max-width: 1000px) {
-
-    .dentist-main {
-        padding: 25px;
-    }
 
     .dentist-stats {
         grid-template-columns: repeat(2, 1fr);
     }
 
     .hero-visual {
-        width: 190px;
+        transform: scale(.85);
     }
 
 }
 
 
+/* ============================================================
+   RESPONSIVE - MOBILE
+============================================================ */
+
 @media (max-width: 760px) {
 
     .dentist-header {
-        height: 65px;
-        padding: 0 17px;
+        padding: 12px 18px;
+    }
+
+    .dentist-header-right {
+        gap: 10px;
     }
 
     .doctor-online,
@@ -1065,27 +1632,86 @@
     }
 
     .dentist-main {
-        padding: 18px;
+        width: calc(100% - 24px);
+
+        padding-top: 14px;
     }
 
     .dentist-hero {
         padding: 25px;
+
+        min-height: auto;
+    }
+
+    .hero-content h1 {
+        font-size: 22px;
+    }
+
+    .hero-details {
+        flex-direction: column;
+
+        gap: 10px;
     }
 
     .hero-visual {
         display: none;
     }
 
-    .hero-content h1 {
-        font-size: 23px;
+    .dentist-stats {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .clinical-info-grid {
-        grid-template-columns: 1fr;
+    .appointments-heading {
+        align-items: flex-start;
+
+        gap: 12px;
+    }
+
+    .history-modal-backdrop {
+        padding: 10px;
+    }
+
+    .history-modal {
+        max-height: 94vh;
+
+        border-radius: 13px;
+    }
+
+    .history-modal-header {
+        padding: 18px;
+
+        min-height: 90px;
+    }
+
+    .history-modal-body {
+        padding: 17px;
+    }
+
+    .history-patient-avatar {
+        width: 44px;
+        height: 44px;
+
+        font-size: 15px;
+    }
+
+    .history-patient-profile h2 {
+        font-size: 17px;
+    }
+
+    .history-patient-meta {
+        font-size: 8px;
+    }
+
+    .history-record {
+        padding: 15px;
     }
 
 }
 
+
+/* ============================================================
+   SMALL MOBILE
+============================================================ */
 
 @media (max-width: 520px) {
 
@@ -1093,41 +1719,72 @@
         grid-template-columns: 1fr;
     }
 
-    .dentist-hero {
-        padding: 22px;
+    .dentist-brand h2 {
+        font-size: 12px;
     }
 
-    .hero-details {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .appointments-panel {
-        padding: 16px;
+    .dentist-dashboard-link {
+        font-size: 8px;
+        padding: 8px;
     }
 
     .appointments-heading {
         flex-direction: column;
-        gap: 12px;
     }
 
-    .dentist-footer {
-        flex-direction: column;
+    .refresh-btn {
+        width: 100%;
+    }
+
+    .history-modal-header {
         align-items: flex-start;
-        gap: 12px;
+    }
+
+    .history-patient-profile {
+        gap: 9px;
+    }
+
+    .history-patient-profile h2 {
+        font-size: 15px;
+    }
+
+    .history-label {
+        font-size: 7px;
+    }
+
+    .history-patient-meta {
+        flex-wrap: wrap;
+    }
+
+    .history-record-header {
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .history-date {
+        text-align: left;
+    }
+
+    .history-prescription {
+        grid-template-columns: 28px 1fr;
+
+        gap: 8px;
+    }
+
+    .history-number {
+        width: 25px;
+        height: 25px;
+
+        font-size: 8px;
+    }
+
+    .history-modal-footer {
+        padding: 10px 14px;
+    }
+
+    .history-modal-footer span {
+        font-size: 7px;
     }
 
 }
-.history-btn { margin-bottom: 8px; }
-.history-modal-backdrop { position: fixed; inset: 0; background: rgba(10,25,45,.55); display:flex; align-items:center; justify-content:center; z-index:9999; padding:20px; }
-.history-modal { background:#fff; width:min(760px,96vw); max-height:85vh; overflow:auto; border-radius:18px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
-.history-modal-head { display:flex; justify-content:space-between; gap:20px; align-items:flex-start; border-bottom:1px solid #e9edf2; padding-bottom:16px; margin-bottom:16px; }
-.history-modal-head span { font-size:11px; letter-spacing:1.5px; font-weight:700; opacity:.65; }
-.history-modal-head h2 { margin:6px 0 2px; }
-.history-modal-head p { margin:0; opacity:.7; }
-.history-modal-head button { border:0; background:transparent; font-size:28px; cursor:pointer; }
-.history-item { border:1px solid #e6ebf0; border-radius:12px; padding:16px; margin:12px 0; }
-.history-item > div { display:flex; justify-content:space-between; gap:12px; }
-.history-item small { opacity:.65; }
-.history-item p { margin:8px 0 0; line-height:1.5; }
-.empty-history { text-align:center; padding:30px; }

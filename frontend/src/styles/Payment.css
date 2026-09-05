@@ -1,0 +1,524 @@
+/* =========================================================
+   SUNRISE DENTAL
+   APPOINTMENT PAYMENTS ONLY
+   Scoped to .payment-page
+   ========================================================= */
+
+.payment-page {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 42px 24px 70px;
+}
+
+/* =========================
+   PAGE HEADER
+   ========================= */
+
+.payment-page .payments-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 30px;
+    margin-bottom: 32px;
+}
+
+.payment-page .payments-eyebrow {
+    display: inline-block;
+    margin-bottom: 9px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #2189bd;
+}
+
+.payment-page .payments-heading h1 {
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: #173f63;
+}
+
+.payment-page .payments-heading p {
+    margin: 12px 0 0;
+    max-width: 650px;
+    color: #708398;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* =========================
+   SECURE BOX
+   ========================= */
+
+.payment-page .payments-secure {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 250px;
+    padding: 14px 18px;
+    background: #ffffff;
+    border: 1px solid #e4edf4;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(28, 76, 108, 0.06);
+}
+
+.payment-page .payments-secure > span {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #eaf7fc;
+    font-size: 17px;
+}
+
+.payment-page .payments-secure strong {
+    display: block;
+    color: #214d6d;
+    font-size: 13px;
+}
+
+.payment-page .payments-secure small {
+    display: block;
+    margin-top: 3px;
+    color: #8798a8;
+    font-size: 11px;
+}
+
+/* =========================
+   ERROR
+   ========================= */
+
+.payment-page .payment-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    border-radius: 12px;
+    background: #fff3f3;
+    border: 1px solid #ffd5d5;
+    color: #b23a3a;
+    font-size: 14px;
+}
+
+.payment-page .payment-error span {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #d95353;
+    color: white;
+    font-weight: 800;
+}
+
+/* =========================
+   LIST CONTAINER
+   ========================= */
+
+.payment-page .appointment-payment-list {
+    width: 100%;
+}
+
+.payment-page .payment-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.payment-page .payment-list-header h2 {
+    margin: 0;
+    color: #214c6d;
+    font-size: 20px;
+    font-weight: 750;
+}
+
+.payment-page .payment-list-header p {
+    margin: 4px 0 0;
+    color: #8798a8;
+    font-size: 13px;
+}
+
+/* =========================
+   APPOINTMENT CARD
+   ========================= */
+
+.payment-page .appointment-payment-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 30px;
+    align-items: center;
+    padding: 27px 30px;
+    margin-bottom: 16px;
+    background: #ffffff;
+    border: 1px solid #e3edf4;
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(35, 79, 108, 0.07);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.payment-page .appointment-payment-card:hover {
+    transform: translateY(-2px);
+    border-color: #c9e4f1;
+    box-shadow: 0 14px 34px rgba(35, 79, 108, 0.11);
+}
+
+.payment-page .pending-card {
+    border-left: 4px solid #e7a32f;
+}
+
+.payment-page .paid-card {
+    border-left: 4px solid #35a875;
+}
+
+/* =========================
+   APPOINTMENT MAIN
+   ========================= */
+
+.payment-page .appointment-main {
+    min-width: 0;
+}
+
+.payment-page .appointment-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 8px;
+}
+
+.payment-page .appointment-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    color: #91a2b0;
+}
+
+.payment-page .appointment-main h3 {
+    margin: 0 0 19px;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    color: #173f63;
+}
+
+/* =========================
+   PAYMENT STATUS
+   ========================= */
+
+.payment-page .payment-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.payment-page .status-pending {
+    color: #a96b08;
+    background: #fff6df;
+}
+
+.payment-page .status-paid {
+    color: #197b55;
+    background: #eaf8f1;
+}
+
+.payment-page .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* =========================
+   APPOINTMENT DETAILS
+   ========================= */
+
+.payment-page .appointment-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+}
+
+.payment-page .appointment-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.payment-page .detail-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #f1f8fc;
+    font-size: 16px;
+}
+
+.payment-page .appointment-detail small {
+    display: block;
+    margin-bottom: 3px;
+    color: #93a1ad;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-page .appointment-detail strong {
+    display: block;
+    color: #3e5e76;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+/* =========================
+   PAYMENT SIDE
+   ========================= */
+
+.payment-page .appointment-payment {
+    min-width: 230px;
+    padding-left: 28px;
+    border-left: 1px solid #edf2f5;
+    text-align: right;
+}
+
+.payment-page .amount-label {
+    margin-bottom: 5px;
+    color: #94a2ae;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+}
+
+.payment-page .payment-amount {
+    margin-bottom: 17px;
+    color: #173f63;
+    font-size: 24px;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
+/* =========================
+   CONTINUE PAYMENT
+   ========================= */
+
+.payment-page .continue-payment-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    min-width: 190px;
+    padding: 12px 17px;
+    border-radius: 10px;
+    background: #1d88bb;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 750;
+    box-shadow: 0 7px 16px rgba(29, 136, 187, 0.18);
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.payment-page .continue-payment-btn:hover {
+    background: #176f9c;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(29, 136, 187, 0.24);
+}
+
+.payment-page .continue-payment-btn .arrow {
+    font-size: 17px;
+    transition: transform 0.2s ease;
+}
+
+.payment-page .continue-payment-btn:hover .arrow {
+    transform: translateX(3px);
+}
+
+/* =========================
+   RECEIPT BUTTON
+   ========================= */
+
+.payment-page .receipt-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 145px;
+    padding: 11px 16px;
+    border: 1px solid #d8e5ed;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #276181;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment-page .receipt-btn:hover {
+    background: #f3f9fc;
+    border-color: #a9cedf;
+}
+
+.payment-page .receipt-btn span {
+    font-size: 16px;
+}
+
+/* =========================
+   PAID MESSAGE
+   ========================= */
+
+.payment-page .paid-message {
+    margin-top: 9px;
+    color: #269366;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+/* =========================
+   EMPTY STATE
+   ========================= */
+
+.payment-page .payment-empty {
+    padding: 70px 30px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e4edf4;
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(35, 79, 108, 0.06);
+}
+
+.payment-page .empty-icon {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    border-radius: 18px;
+    background: #edf8fc;
+    color: #2589b9;
+    font-size: 27px;
+}
+
+.payment-page .payment-empty h2 {
+    margin: 0;
+    color: #214d6d;
+    font-size: 22px;
+}
+
+.payment-page .payment-empty p {
+    margin: 8px auto 24px;
+    max-width: 450px;
+    color: #8394a3;
+    font-size: 14px;
+}
+
+.payment-page .payment-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: #1d88bb;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 850px) {
+
+    .payment-page {
+        padding: 30px 18px 50px;
+    }
+
+    .payment-page .payments-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .payment-page .payments-heading h1 {
+        font-size: 30px;
+    }
+
+    .payment-page .payments-secure {
+        width: 100%;
+    }
+
+    .payment-page .appointment-payment-card {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .payment-page .appointment-payment {
+        padding: 20px 0 0;
+        border-left: none;
+        border-top: 1px solid #edf2f5;
+        text-align: left;
+    }
+
+    .payment-page .continue-payment-btn,
+    .payment-page .receipt-btn {
+        width: 100%;
+    }
+
+    .payment-page .payment-amount {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 560px) {
+
+    .payment-page .payments-heading h1 {
+        font-size: 26px;
+    }
+
+    .payment-page .payments-heading p {
+        font-size: 14px;
+    }
+
+    .payment-page .appointment-payment-card {
+        padding: 22px 18px;
+        border-radius: 15px;
+    }
+
+    .payment-page .appointment-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .payment-page .appointment-details {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .payment-page .appointment-main h3 {
+        font-size: 20px;
+    }
+}
