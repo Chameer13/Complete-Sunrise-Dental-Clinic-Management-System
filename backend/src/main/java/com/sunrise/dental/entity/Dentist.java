@@ -13,4 +13,5 @@ public class Dentist {
  public String getSpecialization(){return specialization;} public void setSpecialization(String v){specialization=v;}
  public String getQualifications(){return qualifications;} public void setQualifications(String v){qualifications=v;}
  public boolean isActive(){return active;} public void setActive(boolean v){active=v;}
+ public String getDisplayName(){return user!=null?user.getFullName():registrationNumber;}
 }

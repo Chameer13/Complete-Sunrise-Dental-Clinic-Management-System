@@ -333,3 +333,47 @@
 .appointment-status.booked{background:#edf5ff;color:#1f6ed4}
 .appointment-status.confirmed{background:#eaf8f0;color:#159957}
 @media(max-width:800px){.staff-appointment-row{grid-template-columns:1fr 1fr}.appointment-status{justify-self:start}.staff-dentist-search{grid-template-columns:1fr}}
+
+.dental-footer {
+    width: 100%;
+    min-height: 85px;
+    padding: 20px 5%;
+    box-sizing: border-box;
+
+    background: #103b57;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 40px;
+}
+
+.dental-footer h3 {
+    margin: 0;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.dental-footer p {
+    margin: 5px 0 0;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 11px;
+}
+
+.dental-footer span {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 10px;
+}
+
+@media (max-width: 600px) {
+    .dental-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 25px 5%;
+    }
+}

@@ -26,7 +26,7 @@ public class ClinicController {
   return s.lookupByUserId(u.getId()).orElse(null);
  }
 
- @GetMapping("/patients/{idNumber}") public Object patient(@PathVariable String idNumber){return s.lookup(idNumber).orElse(null);}
+ @GetMapping("/patients/{idNumber}") public Object patient(@PathVariable String idNumber,Authentication a){return s.securePatientLookup(idNumber,uid(a));}
 
  @PostMapping("/patients")
  public Patient create(@Valid @RequestBody PatientRequest r,Authentication a){
@@ -62,6 +62,9 @@ public class ClinicController {
  @GetMapping("/dentist/appointments")
  public List<Appointment> dentistAppointments(Authentication a){return s.dentistAppointments(uid(a));}
 
+ @GetMapping("/staff/appointments")
+ public List<Appointment> staffAppointments(@RequestParam(required=false) Long dentistId,@RequestParam(required=false) String date,Authentication a){return s.staffAppointmentsFiltered(dentistId,date,uid(a));}
+
  @GetMapping("/staff/dentists/{dentistId}/appointments")
  public List<Appointment> staffDentistAppointments(@PathVariable Long dentistId,Authentication a){
   return s.staffAppointmentsByDentist(dentistId,uid(a));
@@ -77,9 +80,32 @@ public class ClinicController {
  @GetMapping("/me/updates") public List<AppointmentUpdate> myUpdates(Authentication a){return s.myUpdates(uid(a));}
  @GetMapping("/updates") public List<AppointmentUpdate> updates(){return s.allUpdates();}
 
+
+ @PostMapping("/feedback") public Feedback feedback(@Valid @RequestBody FeedbackRequest r,Authentication a){return s.saveFeedback(r,uid(a));}
+ @GetMapping("/feedback/me") public Object myFeedback(Authentication a){return s.myFeedback(uid(a)).orElse(null);}
+ @GetMapping("/feedback") public List<Feedback> feedbacks(Authentication a){return s.allFeedback(uid(a));}
+
+ @PostMapping("/inquiries") public Inquiry inquiry(@Valid @RequestBody InquiryRequest r,Authentication a){return s.createInquiry(r,uid(a));}
+ @GetMapping("/me/inquiries") public List<Inquiry> myInquiries(Authentication a){return s.myInquiries(uid(a));}
+ @GetMapping("/dentist/inquiries") public List<Inquiry> dentistInquiries(Authentication a){return s.dentistInquiries(uid(a));}
+ @GetMapping("/staff/inquiries") public List<Inquiry> staffInquiries(Authentication a){return s.staffInquiries(uid(a));}
+ @PutMapping("/dentist/inquiries/{inquiryId}/reply") public Inquiry replyInquiry(@PathVariable Long inquiryId,@Valid @RequestBody InquiryReplyRequest r,Authentication a){return s.replyInquiry(inquiryId,r,uid(a));}
+
+ @PostMapping("/dentist/appointments/{appointmentId}/prescription") public Prescription prescription(@PathVariable Long appointmentId,@Valid @RequestBody PrescriptionRequest r,Authentication a){return s.savePrescription(appointmentId,r,uid(a));}
+ @GetMapping("/me/prescriptions") public List<Prescription> myPrescriptions(Authentication a){return s.patientPrescriptions(uid(a));}
+ @GetMapping("/staff/patients/{idNumber}/prescriptions") public List<Prescription> staffPrescriptions(@PathVariable String idNumber,Authentication a){return s.staffPrescriptions(idNumber,uid(a));}
+ @GetMapping("/appointments/{appointmentId}/prescription") public Prescription appointmentPrescription(@PathVariable Long appointmentId,Authentication a){return s.appointmentPrescription(appointmentId,uid(a)).orElseThrow();}
+ @PostMapping("/staff/prescriptions/{prescriptionId}/dispense") public MedicineDispensation dispense(@PathVariable Long prescriptionId,@Valid @RequestBody MedicineDispensationRequest r,Authentication a){return s.dispense(prescriptionId,r,uid(a));}
+ @GetMapping("/staff/prescriptions/{prescriptionId}/dispensations") public List<MedicineDispensation> dispensations(@PathVariable Long prescriptionId,Authentication a){return s.dispensations(prescriptionId,uid(a));}
+
  @GetMapping("/appointments/{appointmentId}/billing-preview")
  public BillingPreview billingPreview(@PathVariable Long appointmentId,Authentication a){
   return s.billingPreview(appointmentId,uid(a));
+ }
+
+ @GetMapping("/me/payment-status")
+ public List<StaffFinancialRecord> myPaymentStatus(Authentication a){
+  return s.patientFinancials(uid(a));
  }
 
  @PostMapping("/payments")
@@ -113,5 +139,21 @@ public class ClinicController {
  public List<Appointment> staffPatientAppointments(@PathVariable String idNumber,Authentication a){
   s.staffFinancials(idNumber,uid(a));
   return s.patientAppointments(idNumber);
+ }
+
+ @GetMapping("/staff/appointments/by-number/{appointmentNumber}/patient")
+ public Patient staffPatientByAppointmentNumber(@PathVariable String appointmentNumber,Authentication a){
+  return s.staffPatientByAppointmentNumber(appointmentNumber,uid(a));
+ }
+
+ @GetMapping("/staff/patients/{idNumber}/dispensations")
+ public List<MedicineDispensation> staffPatientDispensations(@PathVariable String idNumber,Authentication a){
+  return s.staffPatientDispensations(idNumber,uid(a));
+ }
+
+ @GetMapping("/dentist/patients/{idNumber}/prescriptions")
+ public List<Prescription> dentistPatientPrescriptions(@PathVariable String idNumber,Authentication a){
+  // The service verifies that the logged-in dentist is the treating dentist for at least one appointment.
+  return s.dentistPatientPrescriptions(idNumber,uid(a));
  }
 }

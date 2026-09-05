@@ -17,6 +17,7 @@ public class ClinicService {
  final TreatmentRepository treatments; final AppointmentRepository appointments;
  final AppointmentUpdateRepository updates; final BillRepository bills;
  final PaymentTransactionRepository payments; final MailService mail; final ReceiptPdfService receipts;
+ final FeedbackRepository feedbacks; final InquiryRepository inquiries; final PrescriptionRepository prescriptions; final MedicineDispensationRepository dispensations;
 
  // Clinic billing rules. Keep these in one place so the frontend cannot alter the final amount.
  private static final BigDecimal CONSULTATION_FEE = new BigDecimal("1500.00");
@@ -25,9 +26,9 @@ public class ClinicService {
 
  public ClinicService(PatientRepository p,UserRepository u,DentistRepository d,TreatmentRepository t,
                       AppointmentRepository a,AppointmentUpdateRepository up,BillRepository b,
-                      PaymentTransactionRepository pt,MailService m,ReceiptPdfService rp){
+                      PaymentTransactionRepository pt,MailService m,ReceiptPdfService rp, FeedbackRepository f, InquiryRepository iq, PrescriptionRepository pr, MedicineDispensationRepository md){
   patients=p;users=u;dentists=d;treatments=t;appointments=a;updates=up;bills=b;
-  payments=pt;mail=m;receipts=rp;
+  payments=pt;mail=m;receipts=rp; feedbacks=f; inquiries=iq; prescriptions=pr; dispensations=md;
  }
 
  private Patient findPatient(String id){
@@ -100,6 +101,15 @@ public class ClinicService {
  }
 
  public Optional<Patient> lookup(String id){return patients.findByIdNumberIgnoreCase(id.trim());}
+ public Patient securePatientLookup(String id,Long userId){
+  User u=currentUser(userId); Patient p=patients.findByIdNumberIgnoreCase(id.trim()).orElse(null);
+  if(p==null) return null;
+  if(u.getRole()==Role.PATIENT){
+   Patient own=patientForUser(userId);
+   if(!own.getId().equals(p.getId())) throw new IllegalArgumentException("Patients can only view their own profile.");
+  } else requireStaff(u);
+  return p;
+ }
  public Optional<Patient> lookupByUserId(Long id){return patients.findByUserId(id);}
  public List<Treatment> treatments(){return treatments.findByActiveTrueOrderByNameAsc();}
 
@@ -150,6 +160,15 @@ public class ClinicService {
 
  public List<Appointment> patientAppointments(String id){
   return appointments.findByPatientIdOrderByAppointmentDateTimeDesc(findPatient(id).getId());
+ }
+
+ public Patient staffPatientByAppointmentNumber(String appointmentNumber, Long userId){
+  requireStaff(currentUser(userId));
+  if(appointmentNumber==null || appointmentNumber.isBlank())
+   throw new IllegalArgumentException("Please select an appointment number.");
+  Appointment a=appointments.findByAppointmentNumber(appointmentNumber.trim())
+      .orElseThrow(()->new IllegalArgumentException("Appointment number was not found."));
+  return a.getPatient();
  }
 
  public List<Appointment> patientAppointmentsForUser(Long userId){
@@ -349,6 +368,20 @@ public class ClinicService {
   }).toList();
  }
 
+ public List<StaffFinancialRecord> patientFinancials(Long userId){
+  Patient p=patientForUser(userId);
+  return appointments.findByPatientIdOrderByAppointmentDateTimeDesc(p.getId()).stream().map(a->{
+   var billOpt=bills.findByAppointmentId(a.getId());
+   if(billOpt.isPresent()){
+    Bill b=billOpt.get();
+    Long paymentId=payments.findByBillId(b.getId()).map(PaymentTransaction::getId).orElse(null);
+    return new StaffFinancialRecord(a.getId(),a.getAppointmentNumber(),a.getAppointmentDateTime(),dentistName(a.getDentist()),a.getTreatment().getName(),b.getTotal(),b.getPaidAmount(),b.getStatus(),b.getPaymentMethod(),paymentId);
+   }
+   BillingPreview preview=preview(a);
+   return new StaffFinancialRecord(a.getId(),a.getAppointmentNumber(),a.getAppointmentDateTime(),dentistName(a.getDentist()),a.getTreatment().getName(),preview.total(),BigDecimal.ZERO,BillStatus.UNPAID,null,null);
+  }).toList();
+ }
+
  public byte[] receipt(Long paymentId,Long userId){
   PaymentTransaction pt=payments.findById(paymentId)
       .orElseThrow(()->new IllegalArgumentException("Payment receipt not found."));
@@ -382,6 +415,76 @@ public class ClinicService {
   b.setStatus(paid.signum()==0?BillStatus.UNPAID:(paid.compareTo(total)==0?BillStatus.PAID:BillStatus.PARTIALLY_PAID));
   return bills.save(b);
  }
+
+
+ public List<Appointment> staffAppointmentsFiltered(Long dentistId,String date,Long userId){
+  requireStaff(currentUser(userId));
+  List<Appointment> list;
+  if(dentistId!=null) list=appointments.findByDentistIdOrderByAppointmentDateTimeAsc(dentistId);
+  else list=appointments.findAll(org.springframework.data.domain.Sort.by("appointmentDateTime").ascending());
+  if(date!=null && !date.isBlank()){
+   LocalDate d=LocalDate.parse(date); list=list.stream().filter(a->a.getAppointmentDateTime().toLocalDate().equals(d)).toList();
+  }
+  return list;
+ }
+
+ @Transactional public Feedback saveFeedback(FeedbackRequest r,Long userId){
+  User u=currentUser(userId); if(u.getRole()!=Role.PATIENT) throw new IllegalArgumentException("Only patients can submit feedback.");
+  Patient p=patientForUser(userId); Feedback f=feedbacks.findByPatientId(p.getId()).orElseGet(Feedback::new);
+  f.setUser(u); f.setPatient(p); f.setRating(r.rating()); f.setComment(r.comment().trim()); return feedbacks.save(f);
+ }
+ public List<Feedback> allFeedback(Long userId){requireStaff(currentUser(userId)); return feedbacks.findAllByOrderByCreatedAtDesc();}
+ public Optional<Feedback> myFeedback(Long userId){return feedbacks.findByPatientId(patientForUser(userId).getId());}
+
+ @Transactional public Inquiry createInquiry(InquiryRequest r,Long userId){
+  User u=currentUser(userId); if(u.getRole()!=Role.PATIENT) throw new IllegalArgumentException("Only patients can create inquiries.");
+  Patient p=patientForUser(userId); Dentist d=dentists.findById(r.dentistId()).filter(Dentist::isActive).orElseThrow(()->new IllegalArgumentException("Selected dentist is not available."));
+  Inquiry i=new Inquiry(); i.setPatient(p); i.setDentist(d); i.setMessage(r.message().trim()); i.setStatus("OPEN"); return inquiries.save(i);
+ }
+ public List<Inquiry> myInquiries(Long userId){return inquiries.findByPatientIdOrderByCreatedAtDesc(patientForUser(userId).getId());}
+ public List<Inquiry> dentistInquiries(Long userId){
+  Dentist d=dentists.findByUserId(userId).orElseThrow(()->new IllegalArgumentException("Dentist profile not found.")); return inquiries.findByDentistIdOrderByCreatedAtDesc(d.getId());
+ }
+ public List<Inquiry> staffInquiries(Long userId){requireStaff(currentUser(userId)); return inquiries.findAll();}
+ @Transactional public Inquiry replyInquiry(Long inquiryId,InquiryReplyRequest r,Long userId){
+  Dentist d=dentists.findByUserId(userId).orElseThrow(()->new IllegalArgumentException("Dentist profile not found.")); Inquiry i=inquiries.findById(inquiryId).orElseThrow(()->new IllegalArgumentException("Inquiry not found."));
+  if(!i.getDentist().getId().equals(d.getId())) throw new IllegalArgumentException("You can only reply to inquiries assigned to you.");
+  i.setReply(r.reply().trim()); i.setStatus("ANSWERED"); i.setRepliedAt(LocalDateTime.now());
+  boolean sent=mail.send(patientEmail(i.getPatient()),"Sunrise Dental - Dentist Inquiry Reply","Dear "+i.getPatient().getFullName()+",\n\nYour inquiry:\n"+i.getMessage()+"\n\nDentist reply:\n"+i.getReply()+"\n\nSunrise Dental Clinic");
+  return inquiries.save(i);
+ }
+
+ @Transactional public Prescription savePrescription(Long appointmentId,PrescriptionRequest r,Long userId){
+  Dentist d=dentists.findByUserId(userId).orElseThrow(()->new IllegalArgumentException("Dentist profile not found.")); Appointment a=findAppointment(appointmentId);
+  if(!a.getDentist().getId().equals(d.getId())) throw new IllegalArgumentException("You can only prescribe for your own appointments.");
+  Prescription p=prescriptions.findByAppointmentId(appointmentId).orElseGet(Prescription::new); p.setAppointment(a); p.setPatient(a.getPatient()); p.setDentist(d); p.setDiagnosis(r.diagnosis().trim()); p.setMedicines(r.medicines().trim()); p.setInstructions(r.instructions()==null?null:r.instructions().trim()); return prescriptions.save(p);
+ }
+ public List<Prescription> patientPrescriptions(Long userId){return prescriptions.findByPatientIdOrderByPrescribedAtDesc(patientForUser(userId).getId());}
+ public List<Prescription> staffPrescriptions(String id,Long userId){requireStaff(currentUser(userId)); return prescriptions.findByPatientIdOrderByPrescribedAtDesc(findPatient(id).getId());}
+ public List<Prescription> dentistPatientPrescriptions(String id,Long userId){
+  User u=currentUser(userId);
+  if(u.getRole()!=Role.DENTIST) throw new IllegalArgumentException("Only dentist accounts can access clinical prescription history.");
+  Dentist d=dentists.findByUserId(userId).orElseThrow(()->new IllegalArgumentException("Dentist profile not found."));
+  Patient p=findPatient(id);
+  boolean assigned=appointments.findByDentistIdOrderByAppointmentDateTimeAsc(d.getId()).stream().anyMatch(a->a.getPatient().getId().equals(p.getId()));
+  if(!assigned) throw new IllegalArgumentException("You can only view prescription history for patients assigned to you.");
+  return prescriptions.findByPatientIdOrderByPrescribedAtDesc(p.getId());
+ }
+ public Optional<Prescription> appointmentPrescription(Long appointmentId,Long userId){
+  User u=currentUser(userId); Prescription p=prescriptions.findByAppointmentId(appointmentId).orElseThrow(()->new IllegalArgumentException("No prescription has been added for this appointment."));
+  if(u.getRole()==Role.PATIENT && (p.getPatient().getUser()==null || !p.getPatient().getUser().getId().equals(userId))) throw new IllegalArgumentException("You can only view your own prescription.");
+  if(u.getRole()==Role.DENTIST && !p.getDentist().getUser().getId().equals(userId)) throw new IllegalArgumentException("You can only view your own patients' prescriptions.");
+  if(u.getRole()!=Role.PATIENT && u.getRole()!=Role.DENTIST) requireStaff(u); return Optional.of(p);
+ }
+ @Transactional public MedicineDispensation dispense(Long prescriptionId,MedicineDispensationRequest r,Long userId){
+  User u=currentUser(userId); requireStaff(u); Prescription p=prescriptions.findById(prescriptionId).orElseThrow(()->new IllegalArgumentException("Prescription not found."));
+  String medicine=r.medicineName().trim();
+  if(dispensations.existsByPrescriptionIdAndMedicineNameIgnoreCase(prescriptionId,medicine))
+   throw new IllegalArgumentException("This medicine has already been recorded for this prescription. Please choose another medicine or review the existing dispensation.");
+  MedicineDispensation m=new MedicineDispensation(); m.setPrescription(p); m.setStaffUser(u); m.setMedicineName(medicine); m.setQuantity(r.quantity().trim()); m.setBatchNumber(r.batchNumber()==null?null:r.batchNumber().trim()); m.setNotes(r.notes()==null?null:r.notes().trim()); return dispensations.save(m);
+ }
+ public List<MedicineDispensation> dispensations(Long prescriptionId,Long userId){requireStaff(currentUser(userId)); return dispensations.findByPrescriptionIdOrderByDispensedAtDesc(prescriptionId);}
+ public List<MedicineDispensation> staffPatientDispensations(String id,Long userId){requireStaff(currentUser(userId)); return dispensations.findByPatientIdOrderByDispensedAtDesc(findPatient(id).getId());}
 
  private BigDecimal n(BigDecimal x){return x==null?BigDecimal.ZERO:x.setScale(2,RoundingMode.HALF_UP);}
  public List<Bill> patientBills(String id){return bills.findByPatientIdOrderByCreatedAtDesc(findPatient(id).getId());}
